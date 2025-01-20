@@ -19,14 +19,13 @@ static Vector2 camera_position;
 static Vector2 old_camera_position;
 
 int room_bg = 0;
-const int TILE_WIDTH = 8; //width of a tile in pixels
-const int MAP_WIDTH = 640 / 8; //width of the big map in tiles
-const int MAP_HEIGHT = 648 / 8; //heigh of the big map in tiles
-const int BG_WIDTH = 256 / 8; //width of the hardware map in tiles
-const int BG_HEIGHT = 256 / 8; //height of the hardware map in tiles
-const int TILED_SCREEN_WIDTH = 256 / 8; //screen width in tiles
-const int TILED_SCREEN_HEIGHT = 192 / 8; //screen height in tiles
-
+const int TILE_WIDTH = 8; // width of a tile in pixels
+const int MAP_WIDTH = 640 / 8; // width of the big map in tiles
+const int MAP_HEIGHT = 648 / 8; // heigh of the big map in tiles
+const int BG_WIDTH = 256 / 8; // width of the hardware map in tiles
+const int BG_HEIGHT = 256 / 8; // height of the hardware map in tiles
+const int TILED_SCREEN_WIDTH = 256 / 8; // screen width in tiles
+const int TILED_SCREEN_HEIGHT = 192 / 8; // screen height in tiles
 
 int main(void)
 {
@@ -132,17 +131,17 @@ int main(void)
 
 void init_video()
 {
-	//video mode for the main engine (top screen, in this case)
+	// video mode for the main engine (top screen, in this case)
 	videoSetMode(MODE_0_2D | DISPLAY_BG0_ACTIVE | DISPLAY_SPR_ACTIVE | DISPLAY_SPR_1D);
 
-	//video mode for the sub engine (bottom screen for us)
+	// video mode for the sub engine (bottom screen for us)
 	videoSetModeSub(MODE_0_2D | DISPLAY_BG0_ACTIVE | DISPLAY_SPR_ACTIVE | DISPLAY_SPR_1D);
 
-	//initialize vram banks
-	vramSetBankA(VRAM_A_MAIN_BG_0x06000000); //used for background layer 0
-	vramSetBankE(VRAM_E_MAIN_SPRITE); //used for all sprites (64KB, but enough for 1024 16 color sprites)
+	// initialize vram banks
+	vramSetBankA(VRAM_A_MAIN_BG_0x06000000); // used for background layer 0
+	vramSetBankE(VRAM_E_MAIN_SPRITE); // used for all sprites (64KB, but enough for 1024 16 color sprites)
 
-	//initialize the main OAM
+	// initialize the main OAM
 	oamInit(&oamMain, SpriteMapping_1D_128, false);
 }
 
@@ -188,23 +187,23 @@ void scroll_camera()
 	bool move_horizontal = false;
 	bool move_vertical = false;
 
-	if(camera_position.x < old_camera_position.x) //move left
+	if(camera_position.x < old_camera_position.x) // move left
 	{
 		offset_x = (int)camera_position.x / 8 - 1;
 		move_horizontal = true;
 	}
-	else if(camera_position.x > old_camera_position.x) //move left
+	else if(camera_position.x > old_camera_position.x) // move left
 	{
 		offset_x = (int)camera_position.x / 8 + TILED_SCREEN_WIDTH;
 		move_horizontal = true;
 	}
 
-	if(camera_position.y < old_camera_position.y) //move up
+	if(camera_position.y < old_camera_position.y) // move up
 	{
 		offset_y = (int)camera_position.y / 8 - 1;
 		move_vertical = true;
 	}
-	else if(camera_position.y > old_camera_position.y) //move down
+	else if(camera_position.y > old_camera_position.y) // move down
 	{
 		offset_y = (int)camera_position.y / 8 + TILED_SCREEN_HEIGHT;
 		move_vertical = true;
@@ -235,9 +234,9 @@ void scroll_camera()
 
 void display()
 {
-	//vsync :3
+	// 'vsync' :3
 	swiWaitForVBlank();
 	
-	//update the modified OAM buffer
+	// update the modified OAM buffer
 	oamUpdate(&oamMain);
 }

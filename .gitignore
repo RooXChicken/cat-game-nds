@@ -1,3 +1,5 @@
 build/*
 build.sh
 .vscode
+*.elf
+*.nds

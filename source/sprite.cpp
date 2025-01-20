@@ -12,6 +12,7 @@ Sprite::Sprite() {}
 
 Sprite::Sprite(SpriteType _type, int _id, int _palette)
 {
+    // i use an id system to allow multiple sprites to use the same image
     if(_id == -1)
         id = LAST_ID++;
     else
@@ -22,14 +23,14 @@ Sprite::Sprite(SpriteType _type, int _id, int _palette)
     int _sprite_tiles_len, _sprite_pal_len;
     const unsigned short* _sprite_pal;
 
+    // depending on the sprite type, load in the relevant data
+    // (hard-coded for now. maybe will be dynamic if i can figure it out)
     switch(_type)
     {
         case(KITA):
             size = SpriteSize_64x64;
             color_format = SpriteColorFormat_256Color;
             
-            allocate_memory(_type);
-
             data = (u8*)sprite_kitaTiles;
             _sprite_tiles_len = sprite_kitaTilesLen;
 
@@ -40,8 +41,6 @@ Sprite::Sprite(SpriteType _type, int _id, int _palette)
         case(SQUARE):
             size = SpriteSize_16x16;
             color_format = SpriteColorFormat_16Color;
-
-            allocate_memory(_type);
             
             data = (u8*)sprite_squareTiles;
             _sprite_tiles_len = sprite_squareTilesLen;
@@ -53,8 +52,6 @@ Sprite::Sprite(SpriteType _type, int _id, int _palette)
         case(BELLA):
             size = SpriteSize_32x32;
             color_format = SpriteColorFormat_16Color;
-
-            allocate_memory(_type);
 
             data = (u8*)sprite_bellaTiles;
             _sprite_tiles_len = sprite_bellaTilesLen;
@@ -69,8 +66,6 @@ Sprite::Sprite(SpriteType _type, int _id, int _palette)
         case(BELLA_ARMS):
             size = SpriteSize_32x32;
             color_format = SpriteColorFormat_16Color;
-            
-            allocate_memory(_type);
 
             data = (u8*)sprite_bella_walk_armsTiles;
             _sprite_tiles_len = sprite_bella_walk_armsTilesLen;
@@ -83,8 +78,13 @@ Sprite::Sprite(SpriteType _type, int _id, int _palette)
             break;
     }
 
+    // allocate memory and copy the tiles into the tile buffer
+    allocate_memory(_type);
     dmaCopy(data, pointer, _sprite_tiles_len);
 
+    // if the palette is -1, it will allocate the sprite's palette into memory
+    // if it is a number, then it indexes into the palette list instead of loading one in
+    // (re-use palettes)
     if(palette == -1)
     {
         palette = id;
@@ -104,6 +104,7 @@ void Sprite::draw(double _camera_x, double _camera_y)
 {
     if((int)frame != previous_frame)
     {
+        // animation by copying the sprite's frame into the 'drawn' tile array
         u8* offset = data + ((int)frame % frame_count) * frame_size;
         dmaCopy(offset, pointer, frame_size);
     }

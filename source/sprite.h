@@ -7,6 +7,8 @@
 #include <nds.h>
 #include <stdio.h>
 
+#include <../source/vector2.h>
+
 enum SpriteType
 {
     KITA = 0,
@@ -34,8 +36,7 @@ class Sprite
         int palette = -1;
 
         int priority = 0;
-        double x = 0;
-        double y = 0;
+        Vector2 position;
 
         int frame_count = 1;
         int frame_size = 32*16; //needs to be half of what it *should be*. don't yet know why

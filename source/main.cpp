@@ -2,12 +2,17 @@
 #define ARM9
 
 #include <nds.h>
+#include <maxmod9.h>
 #include <stdio.h>
 #include <math.h>
-#include <../source/vector2.h>
 
+#include <../source/vector2.h>
 #include <../source/sprite.h>
+#include <../source/sound.h>
+
 #include <../gfx/sprite_room.h>
+#include "../build/soundbank.h"
+#include "../build/soundbank_bin.h"
 
 void init_video();
 void init_backgrounds();
@@ -33,6 +38,11 @@ int main(void)
 
 	init_video();
 	init_backgrounds();
+
+	mmInitDefaultMem((mm_addr)soundbank_bin);
+
+	Sound meow = Sound::load(SFX_CAT_MEOW0);
+	meow.play(false);
 
 	Sprite bella = Sprite(SpriteType::BELLA, -1, -1);
 	Sprite bella_arms = Sprite(SpriteType::BELLA_ARMS, -1, -1);
@@ -61,11 +71,9 @@ int main(void)
 			move_dir.y += 1;
 
 		move_dir = move_dir.normalize();
-		velocity.x += move_dir.x * move_speed;
-		velocity.y += move_dir.y * move_speed;
+		velocity += move_dir * move_speed;
 
-		bella.x += velocity.x;
-		bella.y += velocity.y;
+		bella.position += velocity;
 
 		bella.frame += (velocity.x + velocity.y)/12;
 
@@ -112,11 +120,10 @@ int main(void)
 		}
 
 		bella_arms.frame = bella.frame;
-		bella_arms.x = bella.x;
-		bella_arms.y = bella.y;
+		bella_arms.position = bella.position;
 
-		camera_position.x = bella.x - (SCREEN_WIDTH/2);
-		camera_position.y = bella.y - (SCREEN_HEIGHT/2);
+		camera_position.x = bella.position.x - (SCREEN_WIDTH/2);
+		camera_position.y = bella.position.y - (SCREEN_HEIGHT/2);
 		scroll_camera();
 
 		bella.draw(camera_position.x, camera_position.y);

@@ -1,21 +1,27 @@
+#ifndef VECTOR_H_INCLUDED
+#define VECTOR_H_INCLUDED
+
+#include <math.h>
+
 struct Vector2
 {
     double x = 0;
     double y = 0;
 
     Vector2 normalize();
+
+    Vector2 operator+(Vector2 const&_other);
+    Vector2 operator-(Vector2 const&_other);
+    Vector2 operator*(Vector2 const&_other);
+    Vector2 operator/(Vector2 const&_other);
+    
+    Vector2 operator*(double const&_other);
+    Vector2 operator/(double const&_other);
+
+    void operator+=(Vector2 const&_other);
+    void operator-=(Vector2 const&_other);
+    void operator*=(Vector2 const&_other);
+    void operator/=(Vector2 const&_other);
 };
 
-Vector2 Vector2::normalize()
-{
-    Vector2 _vec = {x, y};
-
-    double _length = sqrt(pow(_vec.x, 2) + pow(_vec.y, 2));
-    if(_length != 0)
-    {
-        _vec.x /= _length;
-        _vec.y /= _length;
-    }
-
-    return _vec;
-}
+#endif

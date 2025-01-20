@@ -109,5 +109,5 @@ void Sprite::draw(double _camera_x, double _camera_y)
         dmaCopy(offset, pointer, frame_size);
     }
 
-    oamSet(&oamMain, id, (int)(x - _camera_x), (int)(y - _camera_y), priority, 0, size, color_format, pointer, -1, false, hide, flip_h, flip_v, mosaic);
+    oamSet(&oamMain, id, (int)(position.x - _camera_x), (int)(position.y - _camera_y), priority, 0, size, color_format, pointer, -1, false, hide, flip_h, flip_v, mosaic);
 }

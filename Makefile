@@ -16,8 +16,9 @@ include $(DEVKITARM)/ds_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	$(shell basename $(CURDIR))
 BUILD		:=	build
-SOURCES		:=	gfx source data
-INCLUDES	:=	include build
+SOURCES		:=	gfx source
+INCLUDES	:=	include
+MUSIC       :=  sfx
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -36,7 +37,7 @@ LDFLAGS	=	-specs=ds_arm9.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
 #---------------------------------------------------------------------------------
-LIBS	:= -lnds9
+LIBS	:= -lmm9 -lnds9
 
 
 #---------------------------------------------------------------------------------
@@ -60,7 +61,9 @@ export DEPSDIR	:=	$(CURDIR)/$(BUILD)
 CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
 CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
-BINFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.bin)))
+BINFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.bin))) soundbank.bin.o
+
+export AUDIOFILES	:=	$(foreach dir,$(notdir $(wildcard $(MUSIC)/*.*)),$(CURDIR)/$(MUSIC)/$(dir))
 
 #---------------------------------------------------------------------------------
 # use CXX for linking C++ projects, CC for standard C
@@ -79,6 +82,9 @@ endif
 export OFILES	:=	$(BINFILES:.bin=.o) \
 					$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
 
+
+export HFILES := $(PNGFILES:.png=.h) $(addsuffix .h,$(subst .,_,$(BINFILES)))
+
 export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 					$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
 					-I$(CURDIR)/$(BUILD)
@@ -90,12 +96,12 @@ export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 #---------------------------------------------------------------------------------
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
-	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+	@$(MAKE) BUILDDIR=`cd $(BUILD) && pwd` --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(TARGET).elf $(TARGET).nds $(TARGET).ds.gba
+	@rm -fr $(BUILD) $(TARGET).elf $(TARGET).nds
 
 
 #---------------------------------------------------------------------------------
@@ -109,11 +115,16 @@ DEPENDS	:=	$(OFILES:.o=.d)
 $(OUTPUT).nds	: 	$(OUTPUT).elf
 $(OUTPUT).elf	:	$(OFILES)
 
+$(OFILES_SOURCES) : $(HFILES)
+
+# build soundbank
+soundbank.bin soundbank.h : $(AUDIOFILES)
+	@mmutil $^ -d -osoundbank.bin -hsoundbank.h
 #---------------------------------------------------------------------------------
-%.o	:	%.bin
+%.bin.o	%_bin.h :	%.bin
 #---------------------------------------------------------------------------------
 	@echo $(notdir $<)
-	$(bin2o)
+	@$(bin2o)
 
 
 -include $(DEPENDS)

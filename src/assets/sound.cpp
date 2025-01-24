@@ -1,5 +1,5 @@
 #include <maxmod9.h>
-#include <../source/sound.h>
+#include <../src/assets/sound.h>
 
 Sound Sound::load(uint32_t _type)
 {

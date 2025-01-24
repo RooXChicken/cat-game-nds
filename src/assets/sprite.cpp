@@ -2,11 +2,10 @@
 #define ARM9
 
 #include <nds.h>
-#include <../source/sprite.h>
-#include <../gfx/sprite_kita.h>
-#include <../gfx/sprite_square.h>
-#include <../gfx/sprite_bella.h>
-#include <../gfx/sprite_bella_walk_arms.h>
+#include <../src/assets/sprite.h>
+#include <../build/sprite_kita.h>
+#include <../build/sprite_bella.h>
+#include <../build/sprite_bella_walk_arms.h>
 
 Sprite::Sprite() {}
 
@@ -36,17 +35,6 @@ Sprite::Sprite(SpriteType _type, int _id, int _palette)
 
             _sprite_pal = sprite_kitaPal;
             _sprite_pal_len = sprite_kitaPalLen;
-            break;
-
-        case(SQUARE):
-            size = SpriteSize_16x16;
-            color_format = SpriteColorFormat_16Color;
-            
-            data = (u8*)sprite_squareTiles;
-            _sprite_tiles_len = sprite_squareTilesLen;
-
-            _sprite_pal = sprite_squarePal;
-            _sprite_pal_len = sprite_squarePalLen;
             break;
 
         case(BELLA):
@@ -100,7 +88,7 @@ void Sprite::allocate_memory(SpriteType _type)
     pointer = LOADED_TEX[_type];
 }
 
-void Sprite::draw(double _camera_x, double _camera_y)
+    void Sprite::draw(Vector2 _camera)
 {
     if((int)frame != previous_frame)
     {
@@ -109,5 +97,5 @@ void Sprite::draw(double _camera_x, double _camera_y)
         dmaCopy(offset, pointer, frame_size);
     }
 
-    oamSet(&oamMain, id, (int)(position.x - _camera_x), (int)(position.y - _camera_y), priority, 0, size, color_format, pointer, -1, false, hide, flip_h, flip_v, mosaic);
+    oamSet(&oamMain, id, (int)(position.x - _camera.x), (int)(position.y - _camera.y), priority, 0, size, color_format, pointer, -1, false, hide, flip_h, flip_v, mosaic);
 }

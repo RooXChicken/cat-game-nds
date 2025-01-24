@@ -1,10 +1,15 @@
-#include <../source/vector2.h>
+#include <../math/vector2.h>
+
+double Vector2::length()
+{
+    return  sqrt(pow(x, 2) + pow(y, 2));
+}
 
 Vector2 Vector2::normalize()
 {
     Vector2 _vec = {x, y};
 
-    double _length = sqrt(pow(_vec.x, 2) + pow(_vec.y, 2));
+    double _length = length();
     if(_length != 0)
     {
         _vec.x /= _length;

@@ -1,0 +1,8 @@
+top bar of bottom screen has area showing inventory
+like this:
+
+< X X S X X >
+
+X is items left and right of S, which is the selected item
+
+bottom screen has area for aiming, which auto fires and shows where you are in that area with the crosshair

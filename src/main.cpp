@@ -6,22 +6,24 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <../source/vector2.h>
-#include <../source/sprite.h>
-#include <../source/sound.h>
+#include <../src/math/vector2.h>
+#include <../src/entity/entity.h>
+#include <../src/assets/sprite.h>
+#include <../src/assets/sound.h>
 
-#include <../gfx/sprite_room.h>
-#include "../build/soundbank.h"
-#include "../build/soundbank_bin.h"
+#include <../build/sprite_room.h>
 
 void init_video();
 void init_backgrounds();
+void init_audio();
 
 void scroll_camera();
 void display();
 
 static Vector2 camera_position;
 static Vector2 old_camera_position;
+
+static Entity entities[128];
 
 int room_bg = 0;
 const int TILE_WIDTH = 8; // width of a tile in pixels
@@ -38,11 +40,7 @@ int main(void)
 
 	init_video();
 	init_backgrounds();
-
-	mmInitDefaultMem((mm_addr)soundbank_bin);
-
-	Sound meow = Sound::load(SFX_CAT_MEOW0);
-	meow.play(false);
+	init_audio();
 
 	Sprite bella = Sprite(SpriteType::BELLA, -1, -1);
 	Sprite bella_arms = Sprite(SpriteType::BELLA_ARMS, -1, -1);
@@ -75,7 +73,12 @@ int main(void)
 
 		bella.position += velocity;
 
-		bella.frame += (velocity.x + velocity.y)/12;
+		if(velocity.x < 0)
+			bella.flip_h = true;
+		else if(velocity.x > 0)
+			bella.flip_h = false;
+
+		bella.frame += velocity.length()/12;
 
 		if(velocity.x > 0)
 		{
@@ -121,13 +124,20 @@ int main(void)
 
 		bella_arms.frame = bella.frame;
 		bella_arms.position = bella.position;
+		bella_arms.flip_h = bella.flip_h;
 
 		camera_position.x = bella.position.x - (SCREEN_WIDTH/2);
 		camera_position.y = bella.position.y - (SCREEN_HEIGHT/2);
 		scroll_camera();
 
-		bella.draw(camera_position.x, camera_position.y);
-		bella_arms.draw(camera_position.x, camera_position.y);
+		bella.draw(camera_position);
+		bella_arms.draw(camera_position);
+
+		for(int i = 0; i < 128; i++)
+		{
+			if(entities[i].type != EntityType::EMPTY)
+				entities[i].draw(camera_position);
+		}
 
 		display();
 		t++;
@@ -164,6 +174,11 @@ void init_backgrounds()
 	
 	for(int i = 0; i < TILED_SCREEN_HEIGHT; i++)
       	dmaCopy(&sprite_roomMap[i * MAP_WIDTH], &bgTileMap[i * BG_WIDTH], TILED_SCREEN_WIDTH * 2);
+}
+
+void init_audio()
+{
+	mmInitDefaultMem((mm_addr)soundbank_bin);
 }
 
 void scroll_camera()

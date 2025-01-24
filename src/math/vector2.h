@@ -8,6 +8,7 @@ struct Vector2
     double x = 0;
     double y = 0;
 
+    double length();
     Vector2 normalize();
 
     Vector2 operator+(Vector2 const&_other);

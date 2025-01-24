@@ -3,6 +3,9 @@
 
 #include <maxmod9.h>
 
+#include "../build/soundbank.h"
+#include "../build/soundbank_bin.h"
+
 struct Sound
 {
     uint32_t type;

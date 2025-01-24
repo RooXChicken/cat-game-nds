@@ -7,14 +7,13 @@
 #include <nds.h>
 #include <stdio.h>
 
-#include <../source/vector2.h>
+#include <../math/vector2.h>
 
 enum SpriteType
 {
     KITA = 0,
-    SQUARE = 1,
-    BELLA = 2,
-    BELLA_ARMS = 3
+    BELLA = 1,
+    BELLA_ARMS = 2
 };
 
 static int LAST_ID = 0;
@@ -49,7 +48,7 @@ class Sprite
 
         Sprite();
         Sprite(SpriteType _type, int _id, int _palette);
-        void draw(double _camera_x, double _camera_y);
+        void draw(Vector2 _camera);
 };
 
 #endif

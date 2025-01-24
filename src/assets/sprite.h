@@ -12,8 +12,10 @@
 enum SpriteType
 {
     KITA = 0,
-    BELLA = 1,
-    BELLA_ARMS = 2
+    BELLA_WALK = 1,
+    BELLA_WALK_ARMS = 2,
+    BELLA_IDLE = 3,
+    BELLA_IDLE_ARMS = 4
 };
 
 static int LAST_ID = 0;

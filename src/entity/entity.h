@@ -17,8 +17,10 @@ class Entity
         Vector2 position;
         Sprite sprite;
 
-        void spawn(Vector2 _position, Sprite _sprite);
-        void draw(Vector2 _camera_position);
+        Entity();
+        virtual void spawn();
+        virtual void update();
+        virtual void draw(Vector2 _camera);
 };
 
 #endif

@@ -4,8 +4,10 @@
 #include <nds.h>
 #include <../src/assets/sprite.h>
 #include <../build/sprite_kita.h>
-#include <../build/sprite_bella.h>
+#include <../build/sprite_bella_walk.h>
+#include <../build/sprite_bella_idle.h>
 #include <../build/sprite_bella_walk_arms.h>
+#include <../build/sprite_bella_idle_arms.h>
 
 Sprite::Sprite() {}
 
@@ -37,21 +39,21 @@ Sprite::Sprite(SpriteType _type, int _id, int _palette)
             _sprite_pal_len = sprite_kitaPalLen;
             break;
 
-        case(BELLA):
+        case(BELLA_WALK):
             size = SpriteSize_32x32;
             color_format = SpriteColorFormat_16Color;
 
-            data = (u8*)sprite_bellaTiles;
-            _sprite_tiles_len = sprite_bellaTilesLen;
+            data = (u8*)sprite_bella_walkTiles;
+            _sprite_tiles_len = sprite_bella_walkTilesLen;
 
-            _sprite_pal = sprite_bellaPal;
-            _sprite_pal_len = sprite_bellaPalLen;
+            _sprite_pal = sprite_bella_walkPal;
+            _sprite_pal_len = sprite_bella_walkPalLen;
 
             frame_count = 6;
             frame_size = 32*16;
             break;
 
-        case(BELLA_ARMS):
+        case(BELLA_WALK_ARMS):
             size = SpriteSize_32x32;
             color_format = SpriteColorFormat_16Color;
 
@@ -60,6 +62,34 @@ Sprite::Sprite(SpriteType _type, int _id, int _palette)
 
             _sprite_pal = sprite_bella_walk_armsPal;
             _sprite_pal_len = sprite_bella_walk_armsPalLen;
+
+            frame_count = 6;
+            frame_size = 32*16;
+            break;
+
+        case(BELLA_IDLE):
+            size = SpriteSize_32x32;
+            color_format = SpriteColorFormat_16Color;
+
+            data = (u8*)sprite_bella_idleTiles;
+            _sprite_tiles_len = sprite_bella_idleTilesLen;
+
+            _sprite_pal = sprite_bella_idlePal;
+            _sprite_pal_len = sprite_bella_idlePalLen;
+
+            frame_count = 6;
+            frame_size = 32*16;
+            break;
+
+        case(BELLA_IDLE_ARMS):
+            size = SpriteSize_32x32;
+            color_format = SpriteColorFormat_16Color;
+
+            data = (u8*)sprite_bella_idle_armsTiles;
+            _sprite_tiles_len = sprite_bella_idle_armsTilesLen;
+
+            _sprite_pal = sprite_bella_idle_armsPal;
+            _sprite_pal_len = sprite_bella_idle_armsPalLen;
 
             frame_count = 6;
             frame_size = 32*16;
@@ -88,7 +118,7 @@ void Sprite::allocate_memory(SpriteType _type)
     pointer = LOADED_TEX[_type];
 }
 
-    void Sprite::draw(Vector2 _camera)
+void Sprite::draw(Vector2 _camera)
 {
     if((int)frame != previous_frame)
     {

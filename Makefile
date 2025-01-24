@@ -17,7 +17,7 @@ GRIT        :=  grit
 #---------------------------------------------------------------------------------
 TARGET		:=	$(shell basename $(CURDIR))
 BUILD		:=	build
-SOURCES		:=	src src/math src/assets
+SOURCES		:=	src src/math src/assets src/entity src/entity/entities
 INCLUDES	:=	$(SOURCES)
 MUSIC       :=  sfx
 GRAPHICS    :=  gfx

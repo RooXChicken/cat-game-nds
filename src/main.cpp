@@ -8,6 +8,7 @@
 
 #include <../src/math/vector2.h>
 #include <../src/entity/entity.h>
+#include <../src/entity/entities/player.h>
 #include <../src/assets/sprite.h>
 #include <../src/assets/sound.h>
 
@@ -17,13 +18,15 @@ void init_video();
 void init_backgrounds();
 void init_audio();
 
+static void spawn_entity(Entity* _entity);
+
 void scroll_camera();
 void display();
 
 static Vector2 camera_position;
 static Vector2 old_camera_position;
 
-static Entity entities[128];
+static Entity* entities[128];
 
 int room_bg = 0;
 const int TILE_WIDTH = 8; // width of a tile in pixels
@@ -42,105 +45,29 @@ int main(void)
 	init_backgrounds();
 	init_audio();
 
-	Sprite bella = Sprite(SpriteType::BELLA, -1, -1);
-	Sprite bella_arms = Sprite(SpriteType::BELLA_ARMS, -1, -1);
-	bella.priority = 1;
-
-	int t = 0;
-	double move_speed = 0.5;
-	double decel_speed = 0.2;
-	double speed_cap = 2;
-
-	Vector2 velocity = {0, 0};
-	Vector2 move_dir = {0, 0};
-
+	spawn_entity(new Player());
+	
 	while(pmMainLoop())
 	{
 		scanKeys();
 
-		move_dir = {0, 0};
-		if(keysHeld() & KEY_LEFT)
-			move_dir.x -= 1;
-		if(keysHeld() & KEY_RIGHT)
-			move_dir.x += 1;
-		if(keysHeld() & KEY_UP)
-			move_dir.y -= 1;
-		if(keysHeld() & KEY_DOWN)
-			move_dir.y += 1;
-
-		move_dir = move_dir.normalize();
-		velocity += move_dir * move_speed;
-
-		bella.position += velocity;
-
-		if(velocity.x < 0)
-			bella.flip_h = true;
-		else if(velocity.x > 0)
-			bella.flip_h = false;
-
-		bella.frame += velocity.length()/12;
-
-		if(velocity.x > 0)
+		for(int i = 0; i < 128; i++)
 		{
-			velocity.x -= decel_speed;
-
-			if(velocity.x > speed_cap)
-				velocity.x -= move_speed;
-
-			if(velocity.x < 0)
-				velocity.x = 0;
-		}
-		else if(velocity.x < 0)
-		{
-			velocity.x += decel_speed;
-
-			if(velocity.x < -speed_cap)
-				velocity.x += move_speed;
-
-			if(velocity.x > 0)
-				velocity.x = 0;
+			if(entities[i] != nullptr)
+				entities[i]->update();
 		}
 
-		if(velocity.y > 0)
-		{
-			velocity.y -= decel_speed;
-
-			if(velocity.y > speed_cap)
-				velocity.y -= move_speed;
-
-			if(velocity.y < 0)
-				velocity.y = 0;
-		}
-		else if(velocity.y < 0)
-		{
-			velocity.y += decel_speed;
-
-			if(velocity.y < -speed_cap)
-				velocity.y += move_speed;
-
-			if(velocity.y > 0)
-				velocity.y = 0;
-		}
-
-		bella_arms.frame = bella.frame;
-		bella_arms.position = bella.position;
-		bella_arms.flip_h = bella.flip_h;
-
-		camera_position.x = bella.position.x - (SCREEN_WIDTH/2);
-		camera_position.y = bella.position.y - (SCREEN_HEIGHT/2);
+		camera_position.x = entities[0]->position.x - (SCREEN_WIDTH/2);
+   		camera_position.y = entities[0]->position.y - (SCREEN_HEIGHT/2);
 		scroll_camera();
-
-		bella.draw(camera_position);
-		bella_arms.draw(camera_position);
 
 		for(int i = 0; i < 128; i++)
 		{
-			if(entities[i].type != EntityType::EMPTY)
-				entities[i].draw(camera_position);
+			if(entities[i] != nullptr)
+				entities[i]->draw(camera_position);
 		}
 
 		display();
-		t++;
 	}
 
 	return 0;
@@ -179,6 +106,19 @@ void init_backgrounds()
 void init_audio()
 {
 	mmInitDefaultMem((mm_addr)soundbank_bin);
+}
+
+static void spawn_entity(Entity* _entity)
+{
+	for(int i = 0; i < 128; i++)
+	{
+		if(entities[i] == nullptr)
+		{
+			entities[i] = _entity;
+			entities[i]->spawn();
+			return;
+		}
+	}
 }
 
 void scroll_camera()

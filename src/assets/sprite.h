@@ -15,7 +15,8 @@ enum SpriteType
     BELLA_WALK = 1,
     BELLA_WALK_ARMS = 2,
     BELLA_IDLE = 3,
-    BELLA_IDLE_ARMS = 4
+    BELLA_IDLE_ARMS = 4,
+    CROSSHAIR = 5
 };
 
 static int LAST_ID = 0;
@@ -36,7 +37,7 @@ class Sprite
         int alpha_color = 0xFF00FF;
         int palette = -1;
 
-        int priority = 0;
+        int priority = 1;
         Vector2 position;
 
         int frame_count = 1;

@@ -14,6 +14,10 @@ class Player : public Entity
 
         Sprite arms;
 
+        Sprite crosshair;
+        Vector2 crosshair_raw_position;
+        Vector2 center;
+
         bool flip;
         double frame = 0;
 
@@ -35,11 +39,16 @@ void Player::spawn()
 {
     type = EntityType::PLAYER;
 
-    body_idle = Sprite(SpriteType::BELLA_IDLE, -1, -1);
+    arms_idle = Sprite(SpriteType::BELLA_IDLE_ARMS, -1, -1);
+    arms_walk = Sprite(SpriteType::BELLA_WALK_ARMS, -1, 0);
+
+    body_idle = Sprite(SpriteType::BELLA_IDLE, -1, 0);
     body_walk = Sprite(SpriteType::BELLA_WALK, -1, 0);
 
-    arms_idle = Sprite(SpriteType::BELLA_IDLE_ARMS, -1, 0);
-    arms_walk = Sprite(SpriteType::BELLA_WALK_ARMS, -1, 0);
+    crosshair = Sprite(SpriteType::CROSSHAIR, -1, 0);
+    center = {12, 16};
+
+    crosshair.priority = 0;
 
     sprite = body_idle;
     arms = arms_idle;
@@ -63,6 +72,14 @@ void Player::update()
 
     position += velocity;
 
+    touchPosition touch;
+    touchRead(&touch);
+
+    if(keysHeld() & KEY_TOUCH)
+        crosshair_raw_position = Vector2{(double)touch.px, (double)touch.py};// - Vector2{SCREEN_WIDTH, SCREEN_HEIGHT}/2.0;
+
+    // crosshair.position = crosshair_raw_position;
+
     if(abs(velocity.length()) < 0.1)
     {
         sprite.pointer = body_idle.pointer;
@@ -80,11 +97,6 @@ void Player::update()
 
         sprite.data = body_walk.data;
         arms.data = arms_walk.data;
-
-        if(velocity.x < 0)
-            flip = true;
-        else if(velocity.x > 0)
-            flip = false;
 
         frame += velocity.length()/12;
     }
@@ -134,7 +146,21 @@ void Player::update()
 
 void Player::draw(Vector2 _camera)
 {
-    sprite.priority = 1;
+    if(keysHeld() & KEY_TOUCH)
+    {
+        double _flip_when = (position.x - _camera.x) + center.x;
+        if(crosshair_raw_position.x < _flip_when)
+            flip = true;
+        else if(crosshair_raw_position.x > _flip_when)
+            flip = false;
+    }
+    else
+    {
+        if(velocity.x < 0)
+            flip = true;
+        else if(velocity.x > 0)
+            flip = false;
+    }
 
     sprite.position = position;
     arms.position = position;
@@ -147,6 +173,9 @@ void Player::draw(Vector2 _camera)
 
     sprite.draw(_camera);
     arms.draw(_camera);
+
+    crosshair.position = crosshair_raw_position;
+    crosshair.draw({0, 0});
 }
 
 #endif

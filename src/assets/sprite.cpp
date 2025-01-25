@@ -8,6 +8,7 @@
 #include <../build/sprite_bella_idle.h>
 #include <../build/sprite_bella_walk_arms.h>
 #include <../build/sprite_bella_idle_arms.h>
+#include <../build/sprite_crosshair.h>
 
 Sprite::Sprite() {}
 
@@ -93,6 +94,17 @@ Sprite::Sprite(SpriteType _type, int _id, int _palette)
 
             frame_count = 6;
             frame_size = 32*16;
+            break;
+
+        case(CROSSHAIR):
+            size = SpriteSize_8x8;
+            color_format = SpriteColorFormat_16Color;
+
+            data = (u8*)sprite_crosshairTiles;
+            _sprite_tiles_len = sprite_crosshairTilesLen;
+
+            _sprite_pal = sprite_crosshairPal;
+            _sprite_pal_len = sprite_crosshairPalLen;
             break;
     }
 

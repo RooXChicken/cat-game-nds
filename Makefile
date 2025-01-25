@@ -17,10 +17,10 @@ GRIT        :=  grit
 #---------------------------------------------------------------------------------
 TARGET		:=	$(shell basename $(CURDIR))
 BUILD		:=	build
-SOURCES		:=	src src/math src/assets src/entity src/entity/entities
+SOURCES		:=	src src/math src/assets src/entity src/entity/entities src/scene
 INCLUDES	:=	$(SOURCES)
 MUSIC       :=  sfx
-GRAPHICS    :=  gfx
+GRAPHICS    :=  gfx gfx/player gfx/items
 
 #---------------------------------------------------------------------------------
 # options for code generation

@@ -29,6 +29,7 @@ class Player : public Entity
         Vector2 move_dir = {0, 0};
 
         void _move();
+        Sprite weapon;
 
     public:
         // Player(Vector2 _position);
@@ -49,6 +50,11 @@ void Player::spawn()
 
     crosshair = Sprite(SpriteType::CROSSHAIR, -1, 0);
     center = {12, 16};
+
+    weapon = Sprite(SpriteType::TREAT_PISTOL, -1, -1);
+    weapon.palette = 1;
+    weapon.make_affine(-1);
+    weapon.priority = 0;
 
     crosshair.priority = 0;
 
@@ -177,6 +183,10 @@ void Player::draw(Vector2 _camera)
 
     sprite.frame = frame;
     arms.frame = frame;
+
+    weapon.position = position;
+    weapon.position.y += center.y;
+    weapon.draw_affine(_camera, 0, {(flip ? -1.0 : 1.0), 1});
 
     sprite.draw(_camera);
     arms.draw(_camera);

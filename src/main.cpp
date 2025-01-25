@@ -6,10 +6,11 @@
 #include <stdio.h>
 #include <math.h>
 
+#include <../src/scene/scene.h>
+#include <../src/scene/main_game.h>
 #include <../src/math/vector2.h>
-#include <../src/entity/entity.h>
-#include <../src/entity/entities/player.h>
-#include <../src/assets/sprite.h>
+// #include <../src/entity/entity.h>
+// #include <../src/assets/sprite.h>
 #include <../src/assets/sound.h>
 
 #include <../build/sprite_room.h>
@@ -18,16 +19,13 @@ void init_video();
 void init_backgrounds();
 void init_audio();
 
-static void spawn_entity(Entity* _entity);
-
 void scroll_camera();
 void display();
 
-static Vector2 camera_position;
-static Vector2 old_camera_position;
-
 //list of all entities (only holds 128 for now, as that is the OAM limit)
-static Entity* entities[128];
+// static Entity* entities[128];
+
+static Scene* active_scene;
 
 int room_bg = 0;
 const int TILE_WIDTH = 8; // width of a tile in pixels
@@ -46,29 +44,21 @@ int main(void)
 	init_backgrounds();
 	init_audio();
 
-	spawn_entity(new Player());
+	active_scene = new MainGameScene();
+
+	int t = 0;
 	
 	while(pmMainLoop())
 	{
 		scanKeys();
 
-		for(int i = 0; i < 128; i++)
-		{
-			if(entities[i] != nullptr)
-				entities[i]->update();
-		}
-
-		camera_position.x = entities[0]->position.x - (SCREEN_WIDTH/2);
-   		camera_position.y = entities[0]->position.y - (SCREEN_HEIGHT/2);
+		active_scene->update();
 		scroll_camera();
 
-		for(int i = 0; i < 128; i++)
-		{
-			if(entities[i] != nullptr)
-				entities[i]->draw(camera_position);
-		}
+		active_scene->render();
 
 		display();
+		t++;
 	}
 
 	return 0;
@@ -109,36 +99,23 @@ void init_audio()
 	mmInitDefaultMem((mm_addr)soundbank_bin);
 }
 
-static void spawn_entity(Entity* _entity)
-{
-	for(int i = 0; i < 128; i++)
-	{
-		if(entities[i] == nullptr)
-		{
-			entities[i] = _entity;
-			entities[i]->spawn();
-			return;
-		}
-	}
-}
-
 void scroll_camera()
 {
-	if(camera_position.x == old_camera_position.x && camera_position.y == old_camera_position.y)
+	if(active_scene->camera_position.x == active_scene->old_camera_position.x && active_scene->camera_position.y == active_scene->old_camera_position.y)
 		return;
 
-	if(camera_position.x < 0)
-		camera_position.x = 0;
-	if(camera_position.y < 0)
-		camera_position.y = 0;
+	if(active_scene->camera_position.x < 0)
+		active_scene->camera_position.x = 0;
+	if(active_scene->camera_position.y < 0)
+		active_scene->camera_position.y = 0;
 
 	const int BORDER_WIDTH = MAP_WIDTH*8;
 	const int BORDER_HEIGHT = MAP_HEIGHT*8;
 
-	if(camera_position.x > BORDER_WIDTH - SCREEN_WIDTH)
-		camera_position.x = BORDER_WIDTH - SCREEN_WIDTH;
-	if(camera_position.y > BORDER_HEIGHT - SCREEN_HEIGHT)
-		camera_position.y = BORDER_HEIGHT - SCREEN_HEIGHT;
+	if(active_scene->camera_position.x > BORDER_WIDTH - SCREEN_WIDTH)
+		active_scene->camera_position.x = BORDER_WIDTH - SCREEN_WIDTH;
+	if(active_scene->camera_position.y > BORDER_HEIGHT - SCREEN_HEIGHT)
+		active_scene->camera_position.y = BORDER_HEIGHT - SCREEN_HEIGHT;
 
 	int offset_x = 0;
    	int offset_y = 0;
@@ -150,25 +127,25 @@ void scroll_camera()
 	bool move_horizontal = false;
 	bool move_vertical = false;
 
-	if(camera_position.x < old_camera_position.x) // move left
+	if(active_scene->camera_position.x < active_scene->old_camera_position.x) // move left
 	{
-		offset_x = (int)camera_position.x / 8 - 1;
+		offset_x = (int)active_scene->camera_position.x / 8 - 1;
 		move_horizontal = true;
 	}
-	else if(camera_position.x > old_camera_position.x) // move left
+	else if(active_scene->camera_position.x > active_scene->old_camera_position.x) // move left
 	{
-		offset_x = (int)camera_position.x / 8 + TILED_SCREEN_WIDTH;
+		offset_x = (int)active_scene->camera_position.x / 8 + TILED_SCREEN_WIDTH;
 		move_horizontal = true;
 	}
 
-	if(camera_position.y < old_camera_position.y) // move up
+	if(active_scene->camera_position.y < active_scene->old_camera_position.y) // move up
 	{
-		offset_y = (int)camera_position.y / 8 - 1;
+		offset_y = (int)active_scene->camera_position.y / 8 - 1;
 		move_vertical = true;
 	}
-	else if(camera_position.y > old_camera_position.y) // move down
+	else if(active_scene->camera_position.y > active_scene->old_camera_position.y) // move down
 	{
-		offset_y = (int)camera_position.y / 8 + TILED_SCREEN_HEIGHT;
+		offset_y = (int)active_scene->camera_position.y / 8 + TILED_SCREEN_HEIGHT;
 		move_vertical = true;
 	}
 
@@ -176,23 +153,23 @@ void scroll_camera()
 	{
 		u16* bgTemp = ((offset_x & 63) >= BG_WIDTH) ? bgRightHalf : bgLeftHalf;
 
-		for(int iy = (int)camera_position.y / 8 - 1 ; iy < (int)camera_position.y / 8 + TILED_SCREEN_HEIGHT + 1; iy++)
+		for(int iy = (int)active_scene->camera_position.y / 8 - 1 ; iy < (int)active_scene->camera_position.y / 8 + TILED_SCREEN_HEIGHT + 1; iy++)
 			bgTemp[(offset_x & (BG_WIDTH - 1)) + (iy & (BG_HEIGHT - 1)) * 32] = sprite_roomMap[offset_x + iy * MAP_WIDTH];
 	}
 
 	if(move_vertical)
 	{
-		for(int ix = (int)camera_position.x / 8 - 1 ; ix < (int)camera_position.x / 8 + TILED_SCREEN_WIDTH + 1; ix++)
+		for(int ix = (int)active_scene->camera_position.x / 8 - 1 ; ix < (int)active_scene->camera_position.x / 8 + TILED_SCREEN_WIDTH + 1; ix++)
 		{
 			u16* bgTemp = ((ix & 63) >= BG_WIDTH) ? bgRightHalf : bgLeftHalf;
 			bgTemp[(ix & (BG_WIDTH - 1)) + (offset_y & (BG_HEIGHT - 1))* 32] = sprite_roomMap[ix + offset_y * MAP_WIDTH];
 		}
 	}
 
-	bgSetScroll(room_bg, (int)camera_position.x, (int)camera_position.y);
+	bgSetScroll(room_bg, (int)active_scene->camera_position.x, (int)active_scene->camera_position.y);
 	bgUpdate();
 
-	old_camera_position = camera_position;
+	active_scene->old_camera_position = active_scene->camera_position;
 }
 
 void display()

@@ -1,27 +1,25 @@
-#ifndef ENTITY_H_INCLUDED
-#define ENTITY_H_INCLUDED
+#ifndef ITEM_H_INCLUDED
+#define ITEM_H_INCLUDED
 
 #include <../math/vector2.h>
 #include <../../src/assets/sprite.h>
 
-enum EntityType
+enum ItemType
 {
-    EMPTY = 0,
-    PLAYER = 1
+    EMPTY = 0
 };
 
-class Entity
+class Item
 {
     public:
-        EntityType type;
-        Vector2 position;
+        ItemType type;
         Sprite sprite;
 
-        Entity();
+        Item();
         virtual void spawn();
+        virtual void use();
         virtual void update();
         virtual void draw(Vector2 _camera);
-        virtual void destroy();
 };
 
 #endif

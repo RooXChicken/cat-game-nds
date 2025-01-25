@@ -16,21 +16,30 @@ enum SpriteType
     BELLA_WALK_ARMS = 2,
     BELLA_IDLE = 3,
     BELLA_IDLE_ARMS = 4,
-    CROSSHAIR = 5
+    CROSSHAIR = 5,
+    TREAT_PISTOL = 6,
+    CATNIP_CANON = 7
 };
 
 static int LAST_ID = 0;
+static int LAST_PALLETE = 0;
+
+static u16* AFFINE_ID[32];
 static u16* LOADED_TEX[256];
 
 class Sprite
 {
     private:
-        void allocate_memory(SpriteType _type);
+        SpriteType type;
+
+        void allocate_memory();
+        void _animate();
         int previous_frame = 0;
     public:
         u16* pointer;
         u8* data;
         int id;
+        int affine_index = -1;
 
         SpriteSize size;
         SpriteColorFormat color_format;
@@ -51,7 +60,12 @@ class Sprite
 
         Sprite();
         Sprite(SpriteType _type, int _id, int _palette);
+
+        void make_affine(int _affine_id);
+
         void draw(Vector2 _camera);
+        void draw_affine(Vector2 _camera, double _rotation, Vector2 _scale);
+        void destroy(bool _global);
 };
 
 #endif

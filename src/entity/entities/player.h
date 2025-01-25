@@ -28,6 +28,8 @@ class Player : public Entity
         Vector2 velocity = {0, 0};
         Vector2 move_dir = {0, 0};
 
+        void _move();
+
     public:
         // Player(Vector2 _position);
         void spawn() override;
@@ -52,7 +54,6 @@ void Player::spawn()
 
     sprite = body_idle;
     arms = arms_idle;
-    
 }
 
 void Player::update()
@@ -76,9 +77,7 @@ void Player::update()
     touchRead(&touch);
 
     if(keysHeld() & KEY_TOUCH)
-        crosshair_raw_position = Vector2{(double)touch.px, (double)touch.py};// - Vector2{SCREEN_WIDTH, SCREEN_HEIGHT}/2.0;
-
-    // crosshair.position = crosshair_raw_position;
+        crosshair_raw_position = Vector2{(double)touch.px, (double)touch.py};
 
     if(abs(velocity.length()) < 0.1)
     {
@@ -98,9 +97,17 @@ void Player::update()
         sprite.data = body_walk.data;
         arms.data = arms_walk.data;
 
-        frame += velocity.length()/12;
+        if((!flip && velocity.x > 0) || (flip && velocity.x < 0))
+            frame += velocity.length()/12;
+        else
+            frame -= velocity.length()/12;
     }
 
+    _move();
+}
+
+void Player::_move()
+{
     if(velocity.x > 0)
     {
         velocity.x -= decel_speed;

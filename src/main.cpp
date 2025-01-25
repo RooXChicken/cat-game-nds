@@ -26,6 +26,7 @@ void display();
 static Vector2 camera_position;
 static Vector2 old_camera_position;
 
+//list of all entities (only holds 128 for now, as that is the OAM limit)
 static Entity* entities[128];
 
 int room_bg = 0;

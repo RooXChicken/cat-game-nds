@@ -135,9 +135,14 @@ void Sprite::draw(Vector2 _camera)
     if((int)frame != previous_frame)
     {
         // animation by copying the sprite's frame into the 'drawn' tile array
-        u8* offset = data + ((int)frame % frame_count) * frame_size;
+        int _frame = (int)frame % frame_count;
+        if(_frame < 0)
+            _frame = frame_count - abs(_frame);
+            
+        u8* offset = data + _frame * frame_size;
         dmaCopy(offset, pointer, frame_size);
     }
 
+    //copy the information to the OAM
     oamSet(&oamMain, id, (int)(position.x - _camera.x), (int)(position.y - _camera.y), priority, 0, size, color_format, pointer, -1, false, hide, flip_h, flip_v, mosaic);
 }

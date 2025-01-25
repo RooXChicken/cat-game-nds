@@ -3,6 +3,9 @@
 
 #include <../../entity/entity.h>
 
+//forward declaration to prevent circular header files
+class Entity;
+
 class Scene
 {
     private:
@@ -13,7 +16,7 @@ class Scene
 
         Scene();
         virtual void load();
-        virtual void spawn_entity(Entity* _entity);
+        virtual Entity* spawn_entity(Entity* _entity);
 
         virtual void update();
         virtual void render();

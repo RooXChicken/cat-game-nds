@@ -11,30 +11,87 @@
 #include <../build/sprite_crosshair.h>
 #include <../build/sprite_treat_pistol.h>
 #include <../build/sprite_catnip_launcher.h>
+#include <../build/sprite_cat_treat.h>
+
+void OAMObject::make_affine(int _affine_id)
+{
+    if(_affine_id == -1)
+    {
+        for(int i = 0; i < MATRIX_COUNT; i++)
+            if(AFFINE_ID[i] == 0)
+            {
+                AFFINE_ID[i] = this;
+                affine_id = i;
+            }
+    }
+    else
+        affine_id = _affine_id;
+
+    oamSetAffineIndex(&oamMain, id, affine_id, false);
+}
+
+void OAMObject::draw(Vector2 _camera)
+{
+    oamSet(&oamMain, id, 
+    (int)(position.x - _camera.x), (int)(position.y - _camera.y), 
+    priority, palette->id, size, palette->format, 
+    pointer, affine_id, false, hide, flip_h, flip_v, mosaic);
+}
+
+void OAMObject::draw_affine(Vector2 _camera, double _rotation, Vector2 _scale)
+{
+    //if the scale is 0, don't draw (mainly to avoid divide by zero)
+    if(_scale.x == 0 || _scale.y == 0)
+        return;
+
+    oamRotateScale(&oamMain, affine_id, degreesToAngle(-_rotation), floatToFixed((float)(1/_scale.x), 8), floatToFixed((float)(1/_scale.y), 8));
+    draw(_camera);
+}
+
+void OAMObject::destroy()
+{
+    oamClearSprite(&oamMain, id);
+    OAM_SLOTS[id] = nullptr;
+    id = -1;
+
+    if(affine_id != -1)
+    {
+        AFFINE_ID[affine_id] = nullptr;
+        affine_id = -1;
+    }
+
+}
 
 Sprite::Sprite() {}
 
 Sprite::Sprite(SpriteType _type, int _id, int _palette)
 {
     type = _type;
-    // i use an id system to allow multiple sprites to use the same image
-    if(_id == -1)
-        id = LAST_ID++;
-    else
-        id = _id;
-
-    palette = _palette;
 
     int _sprite_tiles_len, _sprite_pal_len;
     const unsigned short* _sprite_pal;
+
+    SpriteColorFormat _format;
+
+    oam = new OAMObject{};
+    oam->palette = new OAMPalette{};
+
+    for(int i = 0; i < SPRITE_COUNT; i++)
+    {
+        if(OAM_SLOTS[i] == nullptr)
+        {
+            oam->id = i;
+            break;
+        }
+    }
 
     // depending on the sprite type, load in the relevant data
     // (hard-coded for now. maybe will be dynamic if i can figure it out)
     switch(type)
     {
         case(KITA):
-            size = SpriteSize_64x64;
-            color_format = SpriteColorFormat_256Color;
+            oam->size = SpriteSize_64x64;
+            _format = SpriteColorFormat_256Color;
             
             data = (u8*)sprite_kitaTiles;
             _sprite_tiles_len = sprite_kitaTilesLen;
@@ -44,8 +101,8 @@ Sprite::Sprite(SpriteType _type, int _id, int _palette)
             break;
 
         case(BELLA_WALK):
-            size = SpriteSize_32x32;
-            color_format = SpriteColorFormat_16Color;
+            oam->size = SpriteSize_32x32;
+            _format = SpriteColorFormat_16Color;
 
             data = (u8*)sprite_bella_walkTiles;
             _sprite_tiles_len = sprite_bella_walkTilesLen;
@@ -58,8 +115,8 @@ Sprite::Sprite(SpriteType _type, int _id, int _palette)
             break;
 
         case(BELLA_WALK_ARMS):
-            size = SpriteSize_32x32;
-            color_format = SpriteColorFormat_16Color;
+            oam->size = SpriteSize_32x32;
+            _format = SpriteColorFormat_16Color;
 
             data = (u8*)sprite_bella_walk_armsTiles;
             _sprite_tiles_len = sprite_bella_walk_armsTilesLen;
@@ -72,8 +129,8 @@ Sprite::Sprite(SpriteType _type, int _id, int _palette)
             break;
 
         case(BELLA_IDLE):
-            size = SpriteSize_32x32;
-            color_format = SpriteColorFormat_16Color;
+            oam->size = SpriteSize_32x32;
+            _format = SpriteColorFormat_16Color;
 
             data = (u8*)sprite_bella_idleTiles;
             _sprite_tiles_len = sprite_bella_idleTilesLen;
@@ -86,8 +143,8 @@ Sprite::Sprite(SpriteType _type, int _id, int _palette)
             break;
 
         case(BELLA_IDLE_ARMS):
-            size = SpriteSize_32x32;
-            color_format = SpriteColorFormat_16Color;
+            oam->size = SpriteSize_32x32;
+            _format = SpriteColorFormat_16Color;
 
             data = (u8*)sprite_bella_idle_armsTiles;
             _sprite_tiles_len = sprite_bella_idle_armsTilesLen;
@@ -100,8 +157,8 @@ Sprite::Sprite(SpriteType _type, int _id, int _palette)
             break;
 
         case(CROSSHAIR):
-            size = SpriteSize_8x8;
-            color_format = SpriteColorFormat_16Color;
+            oam->size = SpriteSize_8x8;
+            _format = SpriteColorFormat_16Color;
 
             data = (u8*)sprite_crosshairTiles;
             _sprite_tiles_len = sprite_crosshairTilesLen;
@@ -111,8 +168,8 @@ Sprite::Sprite(SpriteType _type, int _id, int _palette)
             break;
 
         case(TREAT_PISTOL):
-            size = SpriteSize_32x8;
-            color_format = SpriteColorFormat_16Color;
+            oam->size = SpriteSize_32x8;
+            _format = SpriteColorFormat_16Color;
 
             data = (u8*)sprite_treat_pistolTiles;
             _sprite_tiles_len = sprite_treat_pistolTilesLen;
@@ -122,8 +179,8 @@ Sprite::Sprite(SpriteType _type, int _id, int _palette)
             break;
 
         case(CATNIP_CANON):
-            size = SpriteSize_32x8;
-            color_format = SpriteColorFormat_16Color;
+            oam->size = SpriteSize_32x8;
+            _format = SpriteColorFormat_16Color;
 
             data = (u8*)sprite_catnip_launcherTiles;
             _sprite_tiles_len = sprite_catnip_launcherTilesLen;
@@ -131,46 +188,50 @@ Sprite::Sprite(SpriteType _type, int _id, int _palette)
             _sprite_pal = sprite_catnip_launcherPal;
             _sprite_pal_len = sprite_catnip_launcherPalLen;
             break;
+
+        case(CAT_TREAT):
+            oam->size = SpriteSize_8x8;
+            _format = SpriteColorFormat_16Color;
+
+            data = (u8*)sprite_cat_treatTiles;
+            _sprite_tiles_len = sprite_cat_treatTilesLen;
+
+            _sprite_pal = sprite_cat_treatPal;
+            _sprite_pal_len = sprite_cat_treatPalLen;
+            break;
     }
 
     // allocate memory and copy the tiles into the tile buffer
     allocate_memory();
-    dmaCopy(data, pointer, _sprite_tiles_len);
+    dmaCopy(data, oam->pointer, _sprite_tiles_len);
 
     // if the palette is -1, it will allocate the sprite's palette into memory
     // if it is a number, then it indexes into the palette list instead of loading one in
     // (re-use palettes)
-    if(palette == -1)
+    if(_palette == -1)
     {
-        palette = LAST_PALLETE;
-        dmaCopy(_sprite_pal, &SPRITE_PALETTE[palette*16], _sprite_pal_len);
-        LAST_PALLETE++;
+        for(int i = 0; i < 16; i++)
+            if(PALETTE_SLOTS[i] == nullptr)
+            {
+                oam->palette = new OAMPalette{i, SpriteColorFormat_16Color};
+                break;
+            }
+
+        dmaCopy(_sprite_pal, &SPRITE_PALETTE[oam->palette->id*16], _sprite_pal_len);
     }
+    else
+        oam->palette = PALETTE_SLOTS[_palette];
+
+    OAM_SLOTS[oam->id] = oam;
+    PALETTE_SLOTS[oam->palette->id] = oam->palette;
 }
 
 void Sprite::allocate_memory()
 {
-    if(LOADED_TEX[type] == 0)
-        LOADED_TEX[type] = oamAllocateGfx(&oamMain, size, color_format);
+    if(LOADED_TEX[type] == nullptr)
+        LOADED_TEX[type] = oamAllocateGfx(&oamMain, oam->size, oam->palette->format);
 
-    pointer = LOADED_TEX[type];
-}
-
-void Sprite::make_affine(int _affine_id)
-{
-    if(_affine_id == -1)
-    {
-        for(int i = 0; i < MATRIX_COUNT; i++)
-            if(AFFINE_ID[i] == 0)
-            {
-                AFFINE_ID[i] = pointer;
-                affine_index = i;
-            }
-    }
-    else
-        affine_index = _affine_id;
-
-    oamSetAffineIndex(&oamMain, id, affine_index, false);
+    oam->pointer = LOADED_TEX[type];
 }
 
 void Sprite::_animate()
@@ -183,7 +244,7 @@ void Sprite::_animate()
             _frame = frame_count - abs(_frame);
             
         u8* offset = data + _frame * frame_size;
-        dmaCopy(offset, pointer, frame_size);
+        dmaCopy(offset, oam->pointer, frame_size);
     }
 }
 
@@ -192,31 +253,23 @@ void Sprite::draw(Vector2 _camera)
     _animate();
 
     //copy the information to the OAM
-    oamSet(&oamMain, id, (int)(position.x - _camera.x), (int)(position.y - _camera.y), priority, palette, size, color_format, pointer, affine_index, false, hide, flip_h, flip_v, mosaic);
-    // oamSetPalette(&oamMain, id, palette);
+    oam->draw(_camera);
 }
 
 void Sprite::draw_affine(Vector2 _camera, double _rotation, Vector2 _scale)
 {
-    //if the scale is 0, don't draw (mainly to avoid divide by zero)
-    if(_scale.x == 0 || _scale.y == 0)
-        return;
-
-    oamRotateScale(&oamMain, 0, degreesToAngle((int)(_rotation*32767) % 32767), floatToFixed((float)(1/_scale.x), 8), floatToFixed((float)(1/_scale.y), 8));
-    draw(_camera);
+    _animate();
+    oam->draw_affine(_camera, _rotation, _scale);
 }
 
 void Sprite::destroy(bool _global)
 {
     if(_global)
     {
-        oamFreeGfx(&oamMain, pointer);
-        LOADED_TEX[type] = 0;
+        oamFreeGfx(&oamMain, oam->pointer);
+        LOADED_TEX[type] = nullptr;
+        oam->pointer = nullptr;
     }
 
-    if(affine_index != -1)
-    {
-        AFFINE_ID[affine_index] = 0;
-        affine_index = -1;
-    }
+    oam->destroy();
 }

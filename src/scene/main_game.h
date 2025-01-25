@@ -9,7 +9,6 @@ class MainGameScene : public Scene
 {
     private:
     public:
-        // MainGameScene();
         void load() override;
 
         void update() override;
@@ -27,11 +26,11 @@ void MainGameScene::update()
     for(int i = 0; i < 128; i++)
     {
         if(entities[i] != nullptr)
-            entities[i]->update();
+            entities[i]->update(camera_position);
     }
 
-    camera_position.x = entities[0]->position.x - (SCREEN_WIDTH/2);
-    camera_position.y = entities[0]->position.y - (SCREEN_HEIGHT/2);
+    camera_position.x = entities[0]->position.x - (SCREEN_WIDTH/2) + 12;
+    camera_position.y = entities[0]->position.y - (SCREEN_HEIGHT/2) + 16;
 }
 
 #endif

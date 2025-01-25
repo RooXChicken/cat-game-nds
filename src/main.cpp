@@ -45,6 +45,7 @@ int main(void)
 	init_audio();
 
 	active_scene = new MainGameScene();
+	active_scene->load();
 
 	int t = 0;
 	
@@ -56,6 +57,8 @@ int main(void)
 		scroll_camera();
 
 		active_scene->render();
+
+		// nocashMessage("Hello!");
 
 		display();
 		t++;

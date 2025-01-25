@@ -1,23 +1,21 @@
 #include <../scene/scene.h>
 
-Scene::Scene()
-{
-    load();
-}
-
+Scene::Scene() {}
 void Scene::load() {}
 
-void Scene::spawn_entity(Entity* _entity)
+Entity* Scene::spawn_entity(Entity* _entity)
 {
 	for(int i = 0; i < 128; i++)
 	{
 		if(entities[i] == nullptr)
 		{
 			entities[i] = _entity;
-			entities[i]->spawn();
-			return;
+			entities[i]->spawn(this, i);
+			return entities[i];
 		}
 	}
+
+    return nullptr;
 }
 
 void Scene::update()
@@ -25,7 +23,7 @@ void Scene::update()
     for(int i = 0; i < 128; i++)
     {
         if(entities[i] != nullptr)
-            entities[i]->update();
+            entities[i]->update(camera_position);
     }
 }
 

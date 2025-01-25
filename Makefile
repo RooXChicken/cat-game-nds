@@ -20,7 +20,7 @@ BUILD		:=	build
 SOURCES		:=	src src/math src/assets src/entity src/entity/entities src/scene
 INCLUDES	:=	$(SOURCES)
 MUSIC       :=  sfx
-GRAPHICS    :=  gfx gfx/player gfx/items
+GRAPHICS    :=  gfx gfx/player gfx/items gfx/projectiles
 
 #---------------------------------------------------------------------------------
 # options for code generation

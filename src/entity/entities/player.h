@@ -1,7 +1,8 @@
-#ifndef PLAYER_H_INCLUDED
-#define PLAYER_H_INCLUDED
+#ifndef PLAYER_ENTITY_H_INCLUDED
+#define PLAYER_ENTITY_H_INCLUDED
 
 #include <../../entity/entity.h>
+#include <../../entity/entities/bullet.h>
 
 class Player : public Entity
 {
@@ -16,7 +17,6 @@ class Player : public Entity
 
         Sprite crosshair;
         Vector2 crosshair_raw_position;
-        Vector2 center;
 
         bool flip;
         double frame = 0;
@@ -28,19 +28,26 @@ class Player : public Entity
         Vector2 velocity = {0, 0};
         Vector2 move_dir = {0, 0};
 
+        Vector2 aim = {0, 0};
+        double weapon_rotation = 0;
+
         void _move();
         Sprite weapon;
+        int shoot_cooldown = 0;
 
     public:
-        // Player(Vector2 _position);
-        void spawn() override;
-        void update() override;
+        Vector2 center;
+        
+        void spawn(Scene* _scene, int _id) override;
+        void update(Vector2 _camera) override;
         void draw(Vector2 _camera) override;
 };
 
-void Player::spawn()
+void Player::spawn(Scene* _scene, int _id)
 {
     type = EntityType::PLAYER;
+    scene = _scene;
+    id = _id;
 
     arms_idle = Sprite(SpriteType::BELLA_IDLE_ARMS, -1, -1);
     arms_walk = Sprite(SpriteType::BELLA_WALK_ARMS, -1, 0);
@@ -52,17 +59,16 @@ void Player::spawn()
     center = {12, 16};
 
     weapon = Sprite(SpriteType::TREAT_PISTOL, -1, -1);
-    weapon.palette = 1;
-    weapon.make_affine(-1);
-    weapon.priority = 0;
+    weapon.oam->make_affine(-1);
+    weapon.oam->priority = 0;
 
-    crosshair.priority = 0;
+    crosshair.oam->priority = 0;
 
     sprite = body_idle;
     arms = arms_idle;
 }
 
-void Player::update()
+void Player::update(Vector2 _camera)
 {
     move_dir = {0, 0};
     if(keysHeld() & KEY_LEFT)
@@ -83,12 +89,26 @@ void Player::update()
     touchRead(&touch);
 
     if(keysHeld() & KEY_TOUCH)
-        crosshair_raw_position = Vector2{(double)touch.px, (double)touch.py};
+        crosshair_raw_position = Vector2{(double)touch.px, (double)touch.py} - Vector2{3.5, 3.5};
+
+    aim = (position - _camera + center - crosshair_raw_position).normalize();
+
+    if(shoot_cooldown > 0)
+        shoot_cooldown--;
+
+    if((keysHeld() & KEY_TOUCH) && shoot_cooldown <= 0)
+    {
+        Bullet* _bullet = (Bullet*)scene->spawn_entity(new Bullet());
+        _bullet->position = position + center;
+        _bullet->velocity = aim * -20;
+
+        shoot_cooldown = 2;
+    }
 
     if(abs(velocity.length()) < 0.1)
     {
-        sprite.pointer = body_idle.pointer;
-        arms.pointer = arms_idle.pointer;
+        sprite.oam->pointer = body_idle.oam->pointer;
+        arms.oam->pointer = arms_idle.oam->pointer;
 
         sprite.data = body_idle.data;
         arms.data = arms_idle.data;
@@ -97,8 +117,8 @@ void Player::update()
     }
     else
     {
-        sprite.pointer = body_walk.pointer;
-        arms.pointer = arms_walk.pointer;
+        sprite.oam->pointer = body_walk.oam->pointer;
+        arms.oam->pointer = arms_walk.oam->pointer;
 
         sprite.data = body_walk.data;
         arms.data = arms_walk.data;
@@ -166,6 +186,8 @@ void Player::draw(Vector2 _camera)
             flip = true;
         else if(crosshair_raw_position.x > _flip_when)
             flip = false;
+
+        weapon_rotation = (atan2(aim.x, aim.y)) * -60 + (90 * (flip ? -1.0 : 1.0));
     }
     else
     {
@@ -173,25 +195,28 @@ void Player::draw(Vector2 _camera)
             flip = true;
         else if(velocity.x > 0)
             flip = false;
+
+        weapon_rotation = 180;
     }
 
-    sprite.position = position;
-    arms.position = position;
+    sprite.oam->position = position;
+    arms.oam->position = position;
 
-    sprite.flip_h = flip;
-    arms.flip_h = flip;
+    sprite.oam->flip_h = flip;
+    arms.oam->flip_h = flip;
 
     sprite.frame = frame;
     arms.frame = frame;
 
-    weapon.position = position;
-    weapon.position.y += center.y;
-    weapon.draw_affine(_camera, 0, {(flip ? -1.0 : 1.0), 1});
+    weapon.oam->position = position;
+    weapon.oam->position.y += center.y;
+
+    weapon.draw_affine(_camera, weapon_rotation, {(flip ? 1.0 : -1.0), -1.0});
 
     sprite.draw(_camera);
     arms.draw(_camera);
 
-    crosshair.position = crosshair_raw_position;
+    crosshair.oam->position = crosshair_raw_position;
     crosshair.draw({0, 0});
 }
 

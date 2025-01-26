@@ -243,16 +243,16 @@ void Sprite::_animate()
         if(_frame < 0)
             _frame = frame_count - abs(_frame);
             
-        u8* offset = data + _frame * frame_size;
+        u8* offset = data + (_frame * frame_size);
         dmaCopy(offset, oam->pointer, frame_size);
+
+        previous_frame = (int)frame;
     }
 }
 
 void Sprite::draw(Vector2 _camera)
 {
     _animate();
-
-    //copy the information to the OAM
     oam->draw(_camera);
 }
 

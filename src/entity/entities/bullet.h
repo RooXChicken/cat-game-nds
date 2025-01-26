@@ -6,6 +6,7 @@
 class Bullet : public Entity
 {
     private:
+        double decel_speed = 0.04;
         void _move();
 
     public:
@@ -26,16 +27,44 @@ void Bullet::spawn(Scene* _scene, int _id)
 
 void Bullet::update(Vector2 _camera)
 {
+    position += velocity;
+    if(velocity.length() < 0.1)
+        destroy();
+    
     _move();
 }
 
 void Bullet::_move()
 {
-    position += velocity;
-    velocity = velocity * 0.8;
+    if(velocity.x > 0)
+    {
+        velocity.x -= decel_speed;
 
-    if(velocity.length() < 0.1)
-        destroy();
+        if(velocity.x < 0)
+            velocity.x = 0;
+    }
+    else if(velocity.x < 0)
+    {
+        velocity.x += decel_speed;
+
+        if(velocity.x > 0)
+            velocity.x = 0;
+    }
+
+    if(velocity.y > 0)
+    {
+        velocity.y -= decel_speed;
+
+        if(velocity.y < 0)
+            velocity.y = 0;
+    }
+    else if(velocity.y < 0)
+    {
+        velocity.y += decel_speed;
+
+        if(velocity.y > 0)
+            velocity.y = 0;
+    }
 }
 
 void Bullet::draw(Vector2 _camera)

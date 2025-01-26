@@ -100,9 +100,9 @@ void Player::update(Vector2 _camera)
     {
         Bullet* _bullet = (Bullet*)scene->spawn_entity(new Bullet());
         _bullet->position = position + center;
-        _bullet->velocity = aim * -20;
+        _bullet->velocity = aim * -3;
 
-        shoot_cooldown = 2;
+        shoot_cooldown = 20;
     }
 
     if(abs(velocity.length()) < 0.1)

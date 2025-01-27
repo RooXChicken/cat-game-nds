@@ -1,12 +1,9 @@
-#include <maxmod9.h>
-#include <../src/assets/sound.h>
+#include <../assets/sound.h>
 
-Sound Sound::load(uint32_t _type)
+Sound::Sound(uint32_t _type)
 {
-    Sound _sound = {_type, 0, 1.0, 1.0, 0.5};
-    _sound._init();
-
-    return _sound;
+    type = _type;
+    _init();
 }
 
 void Sound::_init()
@@ -29,4 +26,10 @@ void Sound::play(bool _loop)
     _effect.panning = (uint8_t)(255*pan);
 
     mmEffectEx(&_effect);
+}
+
+void Sound::destroy()
+{
+    mmEffectRelease(handle);
+    free(this);
 }

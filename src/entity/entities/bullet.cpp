@@ -1,12 +1,16 @@
 #include <../entities/bullet.h>
 
+Bullet::Bullet(Sprite _sprite, double _damage)
+{
+    sprite = _sprite;
+    damage = _damage;
+}
+
 void Bullet::spawn(Scene* _scene, int _id)
 {
     type = EntityType::BULLET;
     scene = _scene;
     id = _id;
-    
-    sprite = Sprite(SpriteType::CAT_TREAT, -1, 1);
 }
 
 void Bullet::update(Vector2 _camera)

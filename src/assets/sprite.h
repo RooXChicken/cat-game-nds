@@ -26,6 +26,8 @@ enum SpriteType
     BELLA_SHOOT_M2 = 12,
     BELLA_SHOOT_U = 13,
     BELLA_SHOOT_U2 = 14,
+    QTIP_RIFLE = 15,
+    QTIP = 16
 };
 
 struct OAMPalette

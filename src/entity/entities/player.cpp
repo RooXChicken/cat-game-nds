@@ -1,6 +1,8 @@
 #include <../entities/player.h>
 #include <../entities/bullet.h>
 #include <../../item/items/weapon.h>
+#include <../../item/items/treat_pistol.h>
+#include <../../item/items/qtip_rifle.h>
 
 void Player::spawn(Scene* _scene, int _id)
 {
@@ -15,22 +17,31 @@ void Player::spawn(Scene* _scene, int _id)
     body_walk = Sprite(SpriteType::BELLA_WALK, 127, 0);
 
     shoot_d = Sprite(SpriteType::BELLA_SHOOT_D, 126, 0);
-    shoot_d2 = Sprite(SpriteType::BELLA_SHOOT_D2, 126, 0);
+    shoot_d2 = Sprite(SpriteType::BELLA_SHOOT_D2, 125, 0);
     shoot_m = Sprite(SpriteType::BELLA_SHOOT_M, 126, 0);
-    shoot_m2 = Sprite(SpriteType::BELLA_SHOOT_M2, 126, 0);
+    shoot_m2 = Sprite(SpriteType::BELLA_SHOOT_M2, 125, 0);
     shoot_u = Sprite(SpriteType::BELLA_SHOOT_U, 126, 0);
-    shoot_u2 = Sprite(SpriteType::BELLA_SHOOT_U2, 126, 0);
+    shoot_u2 = Sprite(SpriteType::BELLA_SHOOT_U2, 125, 0);
+
+    shoot_d.oam.priority = 0;
+    shoot_m.oam.priority = 0;
+    shoot_u.oam.priority = 0;
 
     crosshair = Sprite(SpriteType::CROSSHAIR, 1, 0);
     center = {12, 16};
 
-    inventory[0] = (Item*)new Weapon();
+    inventory[0] = (Item*)(new QTipRifleWeapon());
     inventory[0]->spawn(this);
+
+    inventory[1] = (Item*)(new TreatPistolWeapon());
+    inventory[1]->spawn(this);
 
     crosshair.oam.priority = 0;
 
     body = &body_idle;
     arms = &arms_idle;
+    arms2 = &shoot_m2;
+    arms2->oam.hide = true;
 }
 
 void Player::update(Vector2 _camera)
@@ -58,9 +69,30 @@ void Player::update(Vector2 _camera)
 
     aim = (position - _camera + center - crosshair_raw_position).normalize();
 
+    if(keysDown() & KEY_L)
+        queued_slot--;
+
+    if(keysDown() & KEY_R)
+        queued_slot++;
+
+    if(queued_slot < 0)
+        queued_slot += 16;
+    if(queued_slot > 15)
+        queued_slot -= 16;
+
+    if(inventory[selected_slot] == nullptr)
+        selected_slot = queued_slot;
+    else if(inventory[selected_slot]->can_swap())
+    {
+        inventory[selected_slot]->sprite.oam.hide = true;
+        selected_slot = queued_slot;
+    }
+
     if(inventory[selected_slot] != nullptr)
     {
         Item* _item = inventory[selected_slot];
+        _item->sprite.oam.hide = false;
+
         _item->aim = aim;
         _item->update();
 
@@ -84,6 +116,27 @@ void Player::update(Vector2 _camera)
             frame += velocity.length()/12;
         else
             frame -= velocity.length()/12;
+    }
+
+    if(inventory[selected_slot] != nullptr)
+    {
+        double _rotation = abs(weapon_rotation);
+
+        if(_rotation < 145)
+        {
+            arms = &shoot_u;
+            arms2 = &shoot_u2;
+        }
+        else if(_rotation > 215)
+        {
+            arms = &shoot_d;
+            arms2 = &shoot_d2;
+        }
+        else if(_rotation >= 145 && weapon_rotation <= 215)
+        {
+            arms = &shoot_m;
+            arms2 = &shoot_m2;
+        }
     }
 
     _move();
@@ -158,25 +211,31 @@ void Player::draw(Vector2 _camera)
 
     body->oam.position = position;
     arms->oam.position = position;
+    arms2->oam.position = position;
 
     body->oam.flip_h = flip;
     arms->oam.flip_h = flip;
+    arms2->oam.flip_h = flip;
 
     body->frame = frame;
-    arms->frame = frame;
+    if(inventory[selected_slot] == nullptr)
+        arms->frame = frame;
 
     if(inventory[selected_slot] != nullptr)
     {
         Item* _item = inventory[selected_slot];
 
         _item->sprite.oam.position = position;
-        _item->sprite.oam.position.y += center.y;
+        _item->sprite.oam.position.y += 2;
 
         _item->sprite.draw_affine(_camera, weapon_rotation, {(flip ? 1.0 : -1.0), -1.0});
     }
 
     body->draw(_camera);
     arms->draw(_camera);
+
+    arms2->oam.hide = (inventory[selected_slot] == nullptr);
+    arms2->draw(_camera);
 
     crosshair.oam.position = crosshair_raw_position;
     crosshair.draw({0, 0});

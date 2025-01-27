@@ -14,6 +14,8 @@
 #include <../build/sprite_treat_pistol.h>
 #include <../build/sprite_catnip_launcher.h>
 #include <../build/sprite_cat_treat.h>
+#include <../build/sprite_qtip.h>
+#include <../build/sprite_qtip_rifle.h>
 
 static u16* LOADED_TEX[256];
 
@@ -189,7 +191,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
             break;
 
         case(TREAT_PISTOL):
-            oam.size = SpriteSize_32x8;
+            oam.size = SpriteSize_32x32;
             _format = SpriteColorFormat_16Color;
 
             data = (u8*)sprite_treat_pistolTiles;
@@ -200,7 +202,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
             break;
 
         case(CATNIP_CANON):
-            oam.size = SpriteSize_32x8;
+            oam.size = SpriteSize_32x32;
             _format = SpriteColorFormat_16Color;
 
             data = (u8*)sprite_catnip_launcherTiles;
@@ -303,6 +305,28 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
 
             frame_count = 6;
             frame_size = 32*16;
+            break;
+
+        case(QTIP):
+            oam.size = SpriteSize_8x8;
+            _format = SpriteColorFormat_16Color;
+
+            data = (u8*)sprite_qtipTiles;
+            _sprite_tiles_len = sprite_qtipTilesLen;
+
+            _sprite_pal = sprite_qtipPal;
+            _sprite_pal_len = sprite_qtipPalLen;
+            break;
+
+        case(QTIP_RIFLE):
+            oam.size = SpriteSize_32x32;
+            _format = SpriteColorFormat_16Color;
+
+            data = (u8*)sprite_qtip_rifleTiles;
+            _sprite_tiles_len = sprite_qtip_rifleTilesLen;
+
+            _sprite_pal = sprite_qtip_riflePal;
+            _sprite_pal_len = sprite_qtip_riflePalLen;
             break;
     }
 

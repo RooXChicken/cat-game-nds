@@ -7,6 +7,11 @@ void Weapon::spawn(Player* _player)
     sprite.oam.make_affine(-1);
 }
 
+bool Weapon::can_swap()
+{
+    return use_cooldown <= 0;
+}
+
 void Weapon::update()
 {
     if(use_cooldown > 0)
@@ -24,7 +29,7 @@ void Weapon::use()
 
 void Weapon::shoot()
 {
-    Bullet* _bullet = (Bullet*)player->scene->spawn_entity(new Bullet());
-    _bullet->position = player->position + player->center;
-    _bullet->velocity = aim * -3;
+    // Bullet* _bullet = (Bullet*)player->scene->spawn_entity(new Bullet(Sprite(SpriteType::CAT_TREAT, -1, 1), 1.0));
+    // _bullet->position = player->position + player->center;
+    // _bullet->velocity = aim * -3;
 }

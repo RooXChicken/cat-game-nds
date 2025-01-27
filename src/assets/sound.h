@@ -1,6 +1,7 @@
 #ifndef SOUND_H_INCLUDED
 #define SOUND_H_INCLUDED
 
+#include <stdlib.h>
 #include <maxmod9.h>
 
 #include "../build/soundbank.h"
@@ -17,10 +18,11 @@ struct Sound
     double pan = 0.5;
     mm_sound_effect _effect;
 
-    static Sound load(uint32_t _type);
+    Sound(uint32_t _type);
     void _init();
 
     void play(bool _loop);
+    void destroy();
 };
 
 #endif

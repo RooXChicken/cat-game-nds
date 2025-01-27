@@ -7,11 +7,14 @@
 
 class Weapon : public Item
 {
+    protected:
+        Sound* shoot_sound;
     public:
         int use_delay = 20;
         int use_cooldown = 0;
 
-        void spawn(Player* _player) override;
+        virtual void spawn(Player* _player) override;
+        bool can_swap() override;
         void update() override;
         void use() override;
         virtual void shoot();

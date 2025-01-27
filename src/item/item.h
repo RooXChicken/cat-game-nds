@@ -3,6 +3,7 @@
 
 #include <../../src/assets/sprite.h>
 #include <../../src/entity/entities/player.h>
+#include <../../src/assets/sound.h>
 
 // enum ItemType
 // {
@@ -23,6 +24,7 @@ class Item
         Item();
         virtual void spawn(Player* _player);
         virtual void use();
+        virtual bool can_swap() { return true; }
         virtual void update();
         virtual void draw(Vector2 _camera);
 };

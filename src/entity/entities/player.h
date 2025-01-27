@@ -24,11 +24,13 @@ class Player : public Entity
 
         Sprite* body;
         Sprite* arms;
+        Sprite* arms2;
 
         Sprite crosshair;
         Vector2 crosshair_raw_position;
 
         Item* inventory[16];
+        int queued_slot = 0;
         int selected_slot = 0;
 
         bool flip;

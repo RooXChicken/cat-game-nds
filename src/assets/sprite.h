@@ -19,7 +19,13 @@ enum SpriteType
     CROSSHAIR = 5,
     TREAT_PISTOL = 6,
     CATNIP_CANON = 7,
-    CAT_TREAT = 8
+    CAT_TREAT = 8,
+    BELLA_SHOOT_D = 9,
+    BELLA_SHOOT_D2 = 10,
+    BELLA_SHOOT_M = 11,
+    BELLA_SHOOT_M2 = 12,
+    BELLA_SHOOT_U = 13,
+    BELLA_SHOOT_U2 = 14,
 };
 
 struct OAMPalette
@@ -31,14 +37,17 @@ struct OAMPalette
 
 struct OAMObject
 {
-    int id = 0;
+    int oam_id = -1;
     int affine_id = -1;
-    u16* pointer = nullptr;
 
+    bool static_slot = false;
+
+    u16* pointer = nullptr;
     OAMPalette* palette = nullptr;
     u8 priority = 1;
 
     Vector2 position = {0, 0};
+    Vector2 camera_offset = {0, 0};
     SpriteSize size = SpriteSize_8x8;
 
     bool hide = false;
@@ -54,13 +63,6 @@ struct OAMObject
     void destroy();
 };
 
-static u16* LOADED_TEX[256];
-
-static OAMObject* OAM_SLOTS[SPRITE_COUNT];
-static OAMObject* AFFINE_ID[MATRIX_COUNT];
-
-static OAMPalette* PALETTE_SLOTS[16];
-
 class Sprite
 {
     private:
@@ -70,7 +72,7 @@ class Sprite
         void _animate();
         int previous_frame = 0;
     public:
-        OAMObject* oam;
+        OAMObject oam;
         u8* data;
 
         int frame_count = 1;
@@ -78,11 +80,13 @@ class Sprite
         double frame = 0;
 
         Sprite();
-        Sprite(SpriteType _type, int _id, int _palette);
+        Sprite(SpriteType _type, int _oam_id, int _palette);
 
         void draw(Vector2 _camera);
         void draw_affine(Vector2 _camera, double _rotation, Vector2 _scale);
         void destroy(bool _global);
+
+        static void _display();
 };
 
 #endif

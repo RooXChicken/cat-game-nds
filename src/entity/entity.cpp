@@ -16,6 +16,6 @@ void Entity::draw(Vector2 _camera) {}
 
 void Entity::destroy()
 {
-    sprite.destroy(true);
     scene->entities[id] = nullptr;
+    free(this);
 }

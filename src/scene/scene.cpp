@@ -22,8 +22,10 @@ void Scene::update()
 {
     for(int i = 0; i < 128; i++)
     {
-        if(entities[i] != nullptr)
-            entities[i]->update(camera_position);
+        if(entities[i] == nullptr)
+            continue;
+
+        entities[i]->update(camera_position);
     }
 }
 
@@ -31,8 +33,10 @@ void Scene::render()
 {
     for(int i = 0; i < 128; i++)
     {
-        if(entities[i] != nullptr)
-            entities[i]->draw(camera_position);
+        if(entities[i] == nullptr)
+            continue;
+
+        entities[i]->draw(camera_position);
     }
 }
 
@@ -40,7 +44,12 @@ void Scene::unload()
 {
     for(int i = 0; i < 128; i++)
     {
+        if(entities[i] == nullptr)
+            continue;
+
         entities[i]->destroy();
         entities[i] = nullptr;
     }
+
+    free(this);
 }

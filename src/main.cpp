@@ -1,5 +1,10 @@
+#ifndef __NDS__
+
 #define __NDS__
 #define ARM9
+
+#endif
+
 
 #include <nds.h>
 #include <maxmod9.h>
@@ -9,8 +14,6 @@
 #include <../src/scene/scene.h>
 #include <../src/scene/main_game.h>
 #include <../src/math/vector2.h>
-// #include <../src/entity/entity.h>
-// #include <../src/assets/sprite.h>
 #include <../src/assets/sound.h>
 
 #include <../build/sprite_room.h>
@@ -21,9 +24,6 @@ void init_audio();
 
 void scroll_camera();
 void display();
-
-//list of all entities (only holds 128 for now, as that is the OAM limit)
-// static Entity* entities[128];
 
 static Scene* active_scene;
 
@@ -57,8 +57,6 @@ int main(void)
 		scroll_camera();
 
 		active_scene->render();
-
-		// nocashMessage("Hello!");
 
 		display();
 		t++;
@@ -177,6 +175,9 @@ void scroll_camera()
 
 void display()
 {
+	//send over all data to the oam
+	Sprite::_display();
+
 	// 'vsync' :3
 	swiWaitForVBlank();
 	

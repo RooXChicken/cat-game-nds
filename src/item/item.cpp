@@ -2,10 +2,14 @@
 
 Item::Item()
 {
-    type = ItemType::EMPTY;
-    spawn();
+    // type = ItemType::EMPTY;
 }
 
-void Item::spawn() {}
+void Item::spawn(Player* _player)
+{
+    player = _player;
+}
+
 void Item::update() {}
+void Item::use() {}
 void Item::draw(Vector2 _camera) {}

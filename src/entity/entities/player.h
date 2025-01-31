@@ -22,9 +22,11 @@ class Player : public Entity
         Sprite shoot_u;
         Sprite shoot_u2;
 
-        Sprite* body;
-        Sprite* arms;
-        Sprite* arms2;
+        Sprite shadow;
+
+        Sprite* body = nullptr;
+        Sprite* arms = nullptr;
+        Sprite* arms2 = nullptr;
 
         Sprite crosshair;
         Vector2 crosshair_raw_position;
@@ -33,7 +35,7 @@ class Player : public Entity
         int queued_slot = 0;
         int selected_slot = 0;
 
-        bool flip;
+        bool flip = false;
         double frame = 0;
 
         double move_speed = 0.5;
@@ -44,9 +46,9 @@ class Player : public Entity
 
         Vector2 aim = {0, 0};
         double weapon_rotation = 0;
+        int shoot_cooldown = 0;
 
         void _move();
-        int shoot_cooldown = 0;
 
     public:
         Vector2 center;

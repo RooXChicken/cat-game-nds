@@ -3,6 +3,8 @@
 void MainGameScene::load()
 {
     spawn_entity(new Player());
+    ItemEntity* _spawn_pistol = (ItemEntity*)spawn_entity(new ItemEntity(new Item(ItemTypes::Type::TREAT_PISTOL)));
+    _spawn_pistol->position = {160, 120};
 }
 
 void MainGameScene::update()

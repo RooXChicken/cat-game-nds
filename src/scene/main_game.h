@@ -4,6 +4,7 @@
 #include <../../scene/scene.h>
 #include <../../entity/entity.h>
 #include <../../entity/entities/player.h>
+#include <../../entity/entities/item_entity.h>
 
 class MainGameScene : public Scene
 {

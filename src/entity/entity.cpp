@@ -2,7 +2,7 @@
 
 Entity::Entity()
 {
-    type = EntityType::EMPTY;
+    type = EntityTypes::Type::EMPTY;
 }
 
 void Entity::spawn(Scene* _scene, int _id)

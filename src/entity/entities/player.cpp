@@ -6,35 +6,37 @@
 
 void Player::spawn(Scene* _scene, int _id)
 {
-    type = EntityType::PLAYER;
+    type = EntityTypes::Type::PLAYER;
     scene = _scene;
     id = _id;
 
-    arms_idle = Sprite(SpriteType::BELLA_IDLE_ARMS, 126, -1);
-    arms_walk = Sprite(SpriteType::BELLA_WALK_ARMS, 126, 0);
+    arms_idle = Sprite(SpriteTypes::Type::BELLA_IDLE_ARMS, 126, -1);
+    arms_walk = Sprite(SpriteTypes::Type::BELLA_WALK_ARMS, 126, 0);
 
-    body_idle = Sprite(SpriteType::BELLA_IDLE, 127, 0);
-    body_walk = Sprite(SpriteType::BELLA_WALK, 127, 0);
+    body_idle = Sprite(SpriteTypes::Type::BELLA_IDLE, 127, 0);
+    body_walk = Sprite(SpriteTypes::Type::BELLA_WALK, 127, 0);
 
-    shoot_d = Sprite(SpriteType::BELLA_SHOOT_D, 126, 0);
-    shoot_d2 = Sprite(SpriteType::BELLA_SHOOT_D2, 125, 0);
-    shoot_m = Sprite(SpriteType::BELLA_SHOOT_M, 126, 0);
-    shoot_m2 = Sprite(SpriteType::BELLA_SHOOT_M2, 125, 0);
-    shoot_u = Sprite(SpriteType::BELLA_SHOOT_U, 126, 0);
-    shoot_u2 = Sprite(SpriteType::BELLA_SHOOT_U2, 125, 0);
+    shoot_d = Sprite(SpriteTypes::Type::BELLA_SHOOT_D, 126, 0);
+    shoot_d2 = Sprite(SpriteTypes::Type::BELLA_SHOOT_D2, 125, 0);
+    shoot_m = Sprite(SpriteTypes::Type::BELLA_SHOOT_M, 126, 0);
+    shoot_m2 = Sprite(SpriteTypes::Type::BELLA_SHOOT_M2, 125, 0);
+    shoot_u = Sprite(SpriteTypes::Type::BELLA_SHOOT_U, 126, 0);
+    shoot_u2 = Sprite(SpriteTypes::Type::BELLA_SHOOT_U2, 125, 0);
+
+    shadow = Sprite(SpriteTypes::Type::SHADOW, -1, -2);
 
     shoot_d.oam.priority = 0;
     shoot_m.oam.priority = 0;
     shoot_u.oam.priority = 0;
 
-    crosshair = Sprite(SpriteType::CROSSHAIR, 1, 0);
+    crosshair = Sprite(SpriteTypes::Type::CROSSHAIR, 1, 0);
     center = {12, 16};
 
-    inventory[0] = (Item*)(new QTipRifleWeapon());
-    inventory[0]->spawn(this);
+    // inventory[0] = (Item*)(new QTipRifleWeapon());
+    // inventory[0]->spawn(this);
 
-    inventory[1] = (Item*)(new TreatPistolWeapon());
-    inventory[1]->spawn(this);
+    // inventory[1] = (Item*)(new TreatPistolWeapon());
+    // inventory[1]->spawn(this);
 
     crosshair.oam.priority = 0;
 
@@ -232,6 +234,9 @@ void Player::draw(Vector2 _camera)
 
         _item->sprite.draw_affine(_camera, weapon_rotation, {(flip ? 1.0 : -1.0), -1.0});
     }
+
+    shadow.oam.position = position;
+    shadow.draw(_camera);
 
     body->draw(_camera);
     arms->draw(_camera);

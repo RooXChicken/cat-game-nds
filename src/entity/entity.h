@@ -5,11 +5,15 @@
 #include <../../src/assets/sprite.h>
 #include <../../src/scene/scene.h>
 
-enum EntityType
+struct EntityTypes
 {
-    EMPTY = 0,
-    PLAYER = 1,
-    BULLET = 2
+    enum class Type
+    {
+        EMPTY = 0,
+        PLAYER = 1,
+        BULLET = 2,
+        ITEM_ENTITY = 3
+    };
 };
 
 //forward declaration to prevent circular header files
@@ -20,7 +24,7 @@ class Entity
     protected:
     public:
         Scene* scene = nullptr;
-        EntityType type = EntityType::EMPTY;
+        EntityTypes::Type type = EntityTypes::Type::EMPTY;
         int id = -1;
 
         Vector2 position = {0, 0};

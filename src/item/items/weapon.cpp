@@ -3,7 +3,7 @@
 void Weapon::spawn(Player* _player)
 {
     player = _player;
-    sprite = Sprite(SpriteType::TREAT_PISTOL, 0, -1);
+    sprite = Sprite(SpriteTypes::Type::TREAT_PISTOL, 0, -1);
     sprite.oam.make_affine(-1);
 }
 

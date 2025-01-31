@@ -8,7 +8,7 @@ Bullet::Bullet(Sprite _sprite, double _damage)
 
 void Bullet::spawn(Scene* _scene, int _id)
 {
-    type = EntityType::BULLET;
+    type = EntityTypes::Type::BULLET;
     scene = _scene;
     id = _id;
 }

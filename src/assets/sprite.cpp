@@ -16,6 +16,7 @@
 #include <../build/sprite_cat_treat.h>
 #include <../build/sprite_qtip.h>
 #include <../build/sprite_qtip_rifle.h>
+#include <../build/sprite_shadow.h>
 
 static u16* LOADED_TEX[256];
 
@@ -90,7 +91,7 @@ void OAMObject::destroy()
 
 Sprite::Sprite() {}
 
-Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
+Sprite::Sprite(SpriteTypes::Type _type, int _oam_id, int _palette)
 {
     type = _type;
 
@@ -100,7 +101,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
     SpriteColorFormat _format;
 
     oam = OAMObject{};
-    oam.palette = new OAMPalette{};
+    // oam.palette = new OAMPalette{};
 
     if(_oam_id != -1)
     {
@@ -112,7 +113,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
     // (hard-coded for now. maybe will be dynamic if i can figure it out)
     switch(type)
     {
-        case(KITA):
+        case(SpriteTypes::Type::KITA):
             oam.size = SpriteSize_64x64;
             _format = SpriteColorFormat_256Color;
             
@@ -123,7 +124,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
             _sprite_pal_len = sprite_kitaPalLen;
             break;
 
-        case(BELLA_WALK):
+        case(SpriteTypes::Type::BELLA_WALK):
             oam.size = SpriteSize_32x32;
             _format = SpriteColorFormat_16Color;
 
@@ -137,7 +138,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
             frame_size = 32*16;
             break;
 
-        case(BELLA_WALK_ARMS):
+        case(SpriteTypes::Type::BELLA_WALK_ARMS):
             oam.size = SpriteSize_32x32;
             _format = SpriteColorFormat_16Color;
 
@@ -151,7 +152,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
             frame_size = 32*16;
             break;
 
-        case(BELLA_IDLE):
+        case(SpriteTypes::Type::BELLA_IDLE):
             oam.size = SpriteSize_32x32;
             _format = SpriteColorFormat_16Color;
 
@@ -165,7 +166,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
             frame_size = 32*16;
             break;
 
-        case(BELLA_IDLE_ARMS):
+        case(SpriteTypes::Type::BELLA_IDLE_ARMS):
             oam.size = SpriteSize_32x32;
             _format = SpriteColorFormat_16Color;
 
@@ -179,7 +180,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
             frame_size = 32*16;
             break;
 
-        case(CROSSHAIR):
+        case(SpriteTypes::Type::CROSSHAIR):
             oam.size = SpriteSize_8x8;
             _format = SpriteColorFormat_16Color;
 
@@ -190,7 +191,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
             _sprite_pal_len = sprite_crosshairPalLen;
             break;
 
-        case(TREAT_PISTOL):
+        case(SpriteTypes::Type::TREAT_PISTOL):
             oam.size = SpriteSize_32x32;
             _format = SpriteColorFormat_16Color;
 
@@ -201,7 +202,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
             _sprite_pal_len = sprite_treat_pistolPalLen;
             break;
 
-        case(CATNIP_CANON):
+        case(SpriteTypes::Type::CATNIP_CANON):
             oam.size = SpriteSize_32x32;
             _format = SpriteColorFormat_16Color;
 
@@ -212,7 +213,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
             _sprite_pal_len = sprite_catnip_launcherPalLen;
             break;
 
-        case(CAT_TREAT):
+        case(SpriteTypes::Type::CAT_TREAT):
             oam.size = SpriteSize_8x8;
             _format = SpriteColorFormat_16Color;
 
@@ -223,7 +224,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
             _sprite_pal_len = sprite_cat_treatPalLen;
             break;
 
-        case(BELLA_SHOOT_D):
+        case(SpriteTypes::Type::BELLA_SHOOT_D):
             oam.size = SpriteSize_32x32;
             _format = SpriteColorFormat_16Color;
 
@@ -237,7 +238,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
             frame_size = 32*16;
             break;
 
-        case(BELLA_SHOOT_D2):
+        case(SpriteTypes::Type::BELLA_SHOOT_D2):
             oam.size = SpriteSize_32x32;
             _format = SpriteColorFormat_16Color;
 
@@ -251,7 +252,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
             frame_size = 32*16;
             break;
 
-        case(BELLA_SHOOT_M):
+        case(SpriteTypes::Type::BELLA_SHOOT_M):
             oam.size = SpriteSize_32x32;
             _format = SpriteColorFormat_16Color;
 
@@ -265,7 +266,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
             frame_size = 32*16;
             break;
 
-        case(BELLA_SHOOT_M2):
+        case(SpriteTypes::Type::BELLA_SHOOT_M2):
             oam.size = SpriteSize_32x32;
             _format = SpriteColorFormat_16Color;
 
@@ -279,7 +280,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
             frame_size = 32*16;
             break;
 
-        case(BELLA_SHOOT_U):
+        case(SpriteTypes::Type::BELLA_SHOOT_U):
             oam.size = SpriteSize_32x32;
             _format = SpriteColorFormat_16Color;
 
@@ -293,7 +294,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
             frame_size = 32*16;
             break;
 
-        case(BELLA_SHOOT_U2):
+        case(SpriteTypes::Type::BELLA_SHOOT_U2):
             oam.size = SpriteSize_32x32;
             _format = SpriteColorFormat_16Color;
 
@@ -307,7 +308,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
             frame_size = 32*16;
             break;
 
-        case(QTIP):
+        case(SpriteTypes::Type::QTIP):
             oam.size = SpriteSize_8x8;
             _format = SpriteColorFormat_16Color;
 
@@ -318,7 +319,7 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
             _sprite_pal_len = sprite_qtipPalLen;
             break;
 
-        case(QTIP_RIFLE):
+        case(SpriteTypes::Type::QTIP_RIFLE):
             oam.size = SpriteSize_32x32;
             _format = SpriteColorFormat_16Color;
 
@@ -327,6 +328,18 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
 
             _sprite_pal = sprite_qtip_riflePal;
             _sprite_pal_len = sprite_qtip_riflePalLen;
+            break;
+
+        case(SpriteTypes::Type::SHADOW):
+            oam.size = SpriteSize_32x8;
+            _format = SpriteColorFormat_Bmp;
+            oam.palette = new OAMPalette{0, SpriteColorFormat_Bmp, 0};
+
+            data = (u8*)sprite_shadowBitmap;
+            _sprite_tiles_len = sprite_shadowBitmapLen;
+
+            // _sprite_pal = sprite_shadowPal;
+            // _sprite_pal_len = sprite_shadowPalLen;
             break;
     }
 
@@ -342,14 +355,14 @@ Sprite::Sprite(SpriteType _type, int _oam_id, int _palette)
         for(int i = 0; i < 16; i++)
             if(PALETTE_SLOTS[i] == nullptr)
             {
-                oam.palette = new OAMPalette{i, SpriteColorFormat_16Color};
+                oam.palette = new OAMPalette{i, _format};
                 break;
             }
 
         dmaCopy(_sprite_pal, &SPRITE_PALETTE[oam.palette->id*16], _sprite_pal_len);
         PALETTE_SLOTS[oam.palette->id] = oam.palette;
     }
-    else
+    else if(_palette != -2)
         oam.palette = PALETTE_SLOTS[_palette];
 }
 

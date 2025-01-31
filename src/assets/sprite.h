@@ -9,25 +9,29 @@
 
 #include <../math/vector2.h>
 
-enum SpriteType
+struct SpriteTypes
 {
-    KITA = 0,
-    BELLA_WALK = 1,
-    BELLA_WALK_ARMS = 2,
-    BELLA_IDLE = 3,
-    BELLA_IDLE_ARMS = 4,
-    CROSSHAIR = 5,
-    TREAT_PISTOL = 6,
-    CATNIP_CANON = 7,
-    CAT_TREAT = 8,
-    BELLA_SHOOT_D = 9,
-    BELLA_SHOOT_D2 = 10,
-    BELLA_SHOOT_M = 11,
-    BELLA_SHOOT_M2 = 12,
-    BELLA_SHOOT_U = 13,
-    BELLA_SHOOT_U2 = 14,
-    QTIP_RIFLE = 15,
-    QTIP = 16
+    enum Type
+    {
+        KITA = 0,
+        BELLA_WALK = 1,
+        BELLA_WALK_ARMS = 2,
+        BELLA_IDLE = 3,
+        BELLA_IDLE_ARMS = 4,
+        CROSSHAIR = 5,
+        TREAT_PISTOL = 6,
+        CATNIP_CANON = 7,
+        CAT_TREAT = 8,
+        BELLA_SHOOT_D = 9,
+        BELLA_SHOOT_D2 = 10,
+        BELLA_SHOOT_M = 11,
+        BELLA_SHOOT_M2 = 12,
+        BELLA_SHOOT_U = 13,
+        BELLA_SHOOT_U2 = 14,
+        QTIP_RIFLE = 15,
+        QTIP = 16,
+        SHADOW = 17
+    };
 };
 
 struct OAMPalette
@@ -68,7 +72,7 @@ struct OAMObject
 class Sprite
 {
     private:
-        SpriteType type;
+        SpriteTypes::Type type;
 
         void allocate_memory();
         void _animate();
@@ -82,12 +86,13 @@ class Sprite
         double frame = 0;
 
         Sprite();
-        Sprite(SpriteType _type, int _oam_id, int _palette);
+        Sprite(SpriteTypes::Type _type, int _oam_id, int _palette);
 
         void draw(Vector2 _camera);
         void draw_affine(Vector2 _camera, double _rotation, Vector2 _scale);
         void destroy(bool _global);
 
+        static void load_palette();
         static void _display();
 };
 

@@ -5,11 +5,15 @@
 #include <../../src/entity/entities/player.h>
 #include <../../src/assets/sound.h>
 
-// enum ItemType
-// {
-//     EMPTY = 0,
-//     TREAT_PISTOL = 1
-// };
+struct ItemTypes
+{
+    enum Type
+    {
+        EMPTY = 0,
+        TREAT_PISTOL = 1,
+        QTIP_RIFLE = 2
+    };
+};
 
 class Player;
 
@@ -18,12 +22,12 @@ class Item
     protected:
         Sound* use_sound;
     public:
-        // ItemType type;
+        ItemTypes::Type type;
         Player* player = nullptr;
         Vector2 aim = {0, 0};
         Sprite sprite;
 
-        Item();
+        Item(ItemTypes::Type);
         virtual void spawn(Player* _player);
         
         virtual void use();

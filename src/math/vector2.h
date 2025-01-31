@@ -3,12 +3,21 @@
 
 #include <math.h>
 
+static double min(double _value, double _min)
+{
+    if(_value > _min)
+        return _min;
+
+    return _value;
+}
+
 struct Vector2
 {
     double x = 0;
     double y = 0;
 
     double length();
+    double cheap_length();
     Vector2 normalize();
 
     Vector2 operator+(Vector2 const&_other);

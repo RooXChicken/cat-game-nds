@@ -24,6 +24,8 @@ void init_audio();
 void scroll_camera();
 void display();
 
+static double min(double _value, double _min);
+
 static Scene* active_scene;
 
 int room_bg = 0;

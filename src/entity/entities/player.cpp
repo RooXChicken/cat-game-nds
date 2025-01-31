@@ -81,7 +81,9 @@ void Player::update(Vector2 _camera)
         queued_slot -= 16;
 
     if(inventory[selected_slot] == nullptr)
+    {
         selected_slot = queued_slot;
+    }
     else if(inventory[selected_slot]->can_swap())
     {
         inventory[selected_slot]->sprite.oam.hide = true;

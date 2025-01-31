@@ -15,6 +15,8 @@ class Player;
 
 class Item
 {
+    protected:
+        Sound* use_sound;
     public:
         // ItemType type;
         Player* player = nullptr;
@@ -23,10 +25,14 @@ class Item
 
         Item();
         virtual void spawn(Player* _player);
+        
         virtual void use();
         virtual bool can_swap() { return true; }
+
         virtual void update();
         virtual void draw(Vector2 _camera);
+
+        virtual void destroy();
 };
 
 #endif

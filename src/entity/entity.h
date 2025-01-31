@@ -20,10 +20,11 @@ class Entity
     protected:
     public:
         Scene* scene = nullptr;
-        EntityType type;
+        EntityType type = EntityType::EMPTY;
         int id = -1;
 
-        Vector2 position;
+        Vector2 position = {0, 0};
+        Vector2 velocity = {0, 0};
         Sprite sprite;
 
         Entity();

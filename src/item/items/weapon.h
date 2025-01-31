@@ -8,7 +8,6 @@
 class Weapon : public Item
 {
     protected:
-        Sound* shoot_sound;
     public:
         int use_delay = 20;
         int use_cooldown = 0;

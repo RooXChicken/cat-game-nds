@@ -410,10 +410,18 @@ void Sprite::_display()
         {
             OAMObject* _oam = OAM_SLOTS[i];
 
+            bool _mosaic = _oam->mosaic.cheap_length();
+
             oamSet(&oamMain, _oam->oam_id, 
             (int)(_oam->position.x - _oam->camera_offset.x), (int)(_oam->position.y - _oam->camera_offset.y), 
             _oam->priority, _oam->palette->id, _oam->size, _oam->palette->format, 
-            _oam->pointer, _oam->affine_id, false, _oam->hide, _oam->flip_h, _oam->flip_v, _oam->mosaic);
+            _oam->pointer, _oam->affine_id, false, _oam->hide, _oam->flip_h, _oam->flip_v, _mosaic);
+
+            if(_mosaic)
+            {
+                oamSetMosaicEnabled(&oamMain, _oam->oam_id, true);
+                oamSetMosaic((int)min(15, _oam->mosaic.x), (int)min(15, _oam->mosaic.y));
+            }
         }
     }
 

@@ -40,7 +40,6 @@ class Player : public Entity
         double decel_speed = 0.2;
         double speed_cap = 2;
 
-        Vector2 velocity = {0, 0};
         Vector2 move_dir = {0, 0};
 
         Vector2 aim = {0, 0};

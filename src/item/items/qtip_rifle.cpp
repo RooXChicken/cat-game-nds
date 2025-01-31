@@ -6,7 +6,7 @@ void QTipRifleWeapon::spawn(Player* _player)
     sprite = Sprite(SpriteType::QTIP_RIFLE, 0, -1);
     sprite.oam.make_affine(0);
 
-    shoot_sound = new Sound(SFX_GUN_SHOOT);
+    use_sound = new Sound(SFX_GUN_SHOOT);
 
     use_delay = 12;
 }
@@ -18,5 +18,5 @@ void QTipRifleWeapon::shoot()
     _bullet->velocity = aim * -8;
     _bullet->decel_speed = 0.1;
 
-    shoot_sound->play(false);
+    use_sound->play(false);
 }

@@ -53,7 +53,7 @@ struct OAMObject
     SpriteSize size = SpriteSize_8x8;
 
     bool hide = false;
-    bool mosaic = false;
+    Vector2 mosaic = {0, 0};
     bool flip_h = false;
     bool flip_v = false;
 

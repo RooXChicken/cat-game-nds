@@ -1,8 +1,14 @@
 #include <../math/vector2.h>
+#include <stdlib.h>
+
+double Vector2::cheap_length()
+{
+    return abs(x) + abs(y);
+}
 
 double Vector2::length()
 {
-    return  sqrt(pow(x, 2) + pow(y, 2));
+    return sqrt(pow(x, 2) + pow(y, 2));
 }
 
 Vector2 Vector2::normalize()

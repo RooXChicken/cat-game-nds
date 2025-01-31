@@ -1,6 +1,12 @@
 #include <../item/item.h>
 
-Item::Item(ItemTypes::Type _type)
+void Item::spawn(Player* _player)
+{
+    player = _player;
+    _spawn(ItemTypes::Type::EMPTY);
+}
+
+void Item::_spawn(ItemTypes::Type _type)
 {
     type = _type;
     switch(type)
@@ -13,11 +19,6 @@ Item::Item(ItemTypes::Type _type)
             sprite = Sprite(SpriteTypes::Type::QTIP_RIFLE, -1, 1);
             break;
     }
-}
-
-void Item::spawn(Player* _player)
-{
-    player = _player;
 }
 
 void Item::update() {}

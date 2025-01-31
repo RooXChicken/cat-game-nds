@@ -1,8 +1,9 @@
 #include <../entities/item_entity.h>
 
-ItemEntity::ItemEntity(Item* _item)
+ItemEntity::ItemEntity(Item* _item, ItemTypes::Type _type)
 {
     item = _item;
+    item->_spawn(_type);
 }
 
 void ItemEntity::spawn(Scene* _scene, int _id)

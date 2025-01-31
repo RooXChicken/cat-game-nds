@@ -13,7 +13,7 @@ class ItemEntity : public Entity
         double decel_speed = 0.04;
         double damage = 0;
 
-        ItemEntity(Item* _item);
+        ItemEntity(Item* _item, ItemTypes::Type _type);
         void spawn(Scene* _scene, int _id) override;
         void update(Vector2 _camera) override;
         void draw(Vector2 _camera) override;

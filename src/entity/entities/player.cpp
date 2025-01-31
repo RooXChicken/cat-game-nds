@@ -23,6 +23,8 @@ void Player::spawn(Scene* _scene, int _id)
     shoot_u = Sprite(SpriteTypes::Type::BELLA_SHOOT_U, 126, 0);
     shoot_u2 = Sprite(SpriteTypes::Type::BELLA_SHOOT_U2, 125, 0);
 
+    Sprite::load_palette(SpriteTypes::Type::TREAT_PISTOL, 1);
+
     shadow = Sprite(SpriteTypes::Type::SHADOW, -1, -2);
 
     shoot_d.oam.priority = 0;
@@ -32,11 +34,11 @@ void Player::spawn(Scene* _scene, int _id)
     crosshair = Sprite(SpriteTypes::Type::CROSSHAIR, 1, 0);
     center = {12, 16};
 
-    // inventory[0] = (Item*)(new QTipRifleWeapon());
-    // inventory[0]->spawn(this);
+    inventory[0] = (Item*)(new QTipRifleWeapon());
+    inventory[0]->spawn(this);
 
-    // inventory[1] = (Item*)(new TreatPistolWeapon());
-    // inventory[1]->spawn(this);
+    inventory[1] = (Item*)(new TreatPistolWeapon());
+    inventory[1]->spawn(this);
 
     crosshair.oam.priority = 0;
 
@@ -235,8 +237,8 @@ void Player::draw(Vector2 _camera)
         _item->sprite.draw_affine(_camera, weapon_rotation, {(flip ? 1.0 : -1.0), -1.0});
     }
 
-    shadow.oam.position = position;
-    shadow.draw(_camera);
+    // shadow.oam.position = position;
+    // shadow.draw(_camera);
 
     body->draw(_camera);
     arms->draw(_camera);

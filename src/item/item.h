@@ -27,8 +27,9 @@ class Item
         Vector2 aim = {0, 0};
         Sprite sprite;
 
-        Item(ItemTypes::Type);
+        // Item();
         virtual void spawn(Player* _player);
+        void _spawn(ItemTypes::Type _type);
         
         virtual void use();
         virtual bool can_swap() { return true; }

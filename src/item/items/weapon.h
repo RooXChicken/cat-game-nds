@@ -12,6 +12,7 @@ class Weapon : public Item
         int use_delay = 20;
         int use_cooldown = 0;
 
+        // Weapon(ItemTypes::Type _type);
         virtual void spawn(Player* _player) override;
         bool can_swap() override;
         void update() override;

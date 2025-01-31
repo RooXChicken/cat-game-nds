@@ -9,6 +9,7 @@
 class QTipRifleWeapon : public Weapon
 {
     public:
+        // QTipRifleWeapon(ItemTypes::Type _type);
         void spawn(Player* _player) override;
         void shoot() override;
 };

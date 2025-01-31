@@ -69,6 +69,21 @@ struct OAMObject
     void destroy();
 };
 
+struct SpriteData
+{
+    SpriteSize size;
+    SpriteColorFormat format;
+
+    u8* data;
+    int tiles_length;
+
+    const unsigned short* palette;
+    u32 palette_length;
+
+    int frame_count;
+    int frame_size;
+};
+
 class Sprite
 {
     private:
@@ -92,7 +107,8 @@ class Sprite
         void draw_affine(Vector2 _camera, double _rotation, Vector2 _scale);
         void destroy(bool _global);
 
-        static void load_palette();
+        static SpriteData _get_sprite_data(SpriteTypes::Type _type);
+        static void load_palette(SpriteTypes::Type _type, int _index);
         static void _display();
 };
 

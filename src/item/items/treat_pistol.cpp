@@ -3,7 +3,9 @@
 void TreatPistolWeapon::spawn(Player* _player)
 {
     player = _player;
-    sprite = Sprite(SpriteTypes::Type::TREAT_PISTOL, 0, 1);
+    _spawn(ItemTypes::Type::TREAT_PISTOL);
+    sprite.oam.static_slot = true;
+    sprite.oam.oam_id = 0;
     sprite.oam.make_affine(0);
 
     use_sound = new Sound(SFX_GUN_SHOOT);

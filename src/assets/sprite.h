@@ -29,7 +29,21 @@ struct SpriteTypes
         BELLA_SHOOT_U = 13,
         BELLA_SHOOT_U2 = 14,
         QTIP_RIFLE = 15,
-        QTIP = 16
+        QTIP = 16,
+        BANANA_BREAD = 17,
+        BOBA_TEA = 18,
+        BREAD = 19,
+        CHALK = 20,
+        CINNAMON = 21,
+        CLOTHING_TAG = 22,
+        COFFEE = 23,
+        LUCKY_BAG = 24,
+        NEW_WORLD = 25,
+        PINEAPPLE = 26,
+        MOCHI = 27,
+        PEANUT_BUTTER_APPLE = 28,
+        POLAROID = 29,
+        WORN_TOY_CAT = 30
         // SHADOW = 17
     };
 };

@@ -29,7 +29,7 @@ class Item
 
         // Item();
         virtual void spawn(Player* _player);
-        void _spawn(ItemTypes::Type _type);
+        virtual void _spawn(ItemTypes::Type _type);
         
         virtual void use();
         virtual bool can_swap() { return true; }

@@ -10,6 +10,7 @@ class TreatPistolWeapon : public Weapon
 {
     public:
         void spawn(Player* _player) override;
+        void _spawn(ItemTypes::Type _type) override;
         void shoot() override;
 };
 

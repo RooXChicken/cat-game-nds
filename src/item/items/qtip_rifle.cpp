@@ -4,6 +4,7 @@ void QTipRifleWeapon::spawn(Player* _player)
 {
     player = _player;
     _spawn(ItemTypes::Type::QTIP_RIFLE);
+
     sprite.oam.static_slot = true;
     sprite.oam.oam_id = 0;
     sprite.oam.make_affine(0);
@@ -11,6 +12,12 @@ void QTipRifleWeapon::spawn(Player* _player)
     use_sound = new Sound(SFX_GUN_SHOOT);
 
     use_delay = 12;
+}
+
+void QTipRifleWeapon::_spawn(ItemTypes::Type _type)
+{
+    type = _type;
+    sprite = Sprite(SpriteTypes::Type::QTIP_RIFLE, -1, 1);
 }
 
 void QTipRifleWeapon::shoot()

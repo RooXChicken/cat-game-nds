@@ -9,16 +9,6 @@ void Item::spawn(Player* _player)
 void Item::_spawn(ItemTypes::Type _type)
 {
     type = _type;
-    switch(type)
-    {
-        case ItemTypes::Type::TREAT_PISTOL:
-            sprite = Sprite(SpriteTypes::Type::TREAT_PISTOL, -1, -1);
-            break;
-            
-        case ItemTypes::Type::QTIP_RIFLE:
-            sprite = Sprite(SpriteTypes::Type::QTIP_RIFLE, -1, -1);
-            break;
-    }
 }
 
 void Item::update() {}

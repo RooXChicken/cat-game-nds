@@ -16,6 +16,21 @@
 #include <../build/sprite_cat_treat.h>
 #include <../build/sprite_qtip.h>
 #include <../build/sprite_qtip_rifle.h>
+
+#include <../build/sprite_banana_bread.h>
+#include <../build/sprite_boba_tea.h>
+#include <../build/sprite_bread.h>
+#include <../build/sprite_chalk.h>
+#include <../build/sprite_cinnamon.h>
+#include <../build/sprite_clothing_tag.h>
+#include <../build/sprite_coffee.h>
+#include <../build/sprite_lucky_bag.h>
+#include <../build/sprite_mochi.h>
+#include <../build/sprite_new_world.h>
+#include <../build/sprite_peanut_butter_apple.h>
+#include <../build/sprite_pineapple.h>
+#include <../build/sprite_polaroid.h>
+#include <../build/sprite_worn_toy_cat.h>
 // #include <../build/sprite_shadow.h>
 
 static u16* LOADED_TEX[256];
@@ -456,16 +471,158 @@ void Sprite::_get_sprite_data(SpriteTypes::Type _type, SpriteData* _data)
             _data->palette_length = sprite_qtip_riflePalLen;
             break;
 
-        // case(SpriteTypes::Type::SHADOW):
-        //     _data->size = SpriteSize_32x8;
-        //     _data->format = SpriteColorFormat_Bmp;
-        //     // oam.palette = new OAMPalette{0, SpriteColorFormat_Bmp, 0};
+        case(SpriteTypes::Type::BANANA_BREAD):
+            _data->size = SpriteSize_16x16;
+            _data->format = SpriteColorFormat_16Color;
 
-        //     _data->data = (u8*)sprite_shadowBitmap;
-        //     _data->tiles_length = sprite_shadowBitmapLen;
+            _data->data = (u8*)sprite_banana_breadTiles;
+            _data->tiles_length = sprite_banana_breadTilesLen;
 
-        //     // _data->palette = sprite_shadowPal;
-        //     // _data->palette_length = sprite_shadowPalLen;
-        //     break;
+            _data->palette = sprite_banana_breadPal;
+            _data->palette_length = sprite_banana_breadPalLen;
+            break;
+
+        case(SpriteTypes::Type::BOBA_TEA):
+            _data->size = SpriteSize_16x16;
+            _data->format = SpriteColorFormat_16Color;
+
+            _data->data = (u8*)sprite_boba_teaTiles;
+            _data->tiles_length = sprite_boba_teaTilesLen;
+
+            _data->palette = sprite_boba_teaPal;
+            _data->palette_length = sprite_boba_teaPalLen;
+            break;
+
+        case(SpriteTypes::Type::BREAD):
+            _data->size = SpriteSize_16x16;
+            _data->format = SpriteColorFormat_16Color;
+
+            _data->data = (u8*)sprite_breadTiles;
+            _data->tiles_length = sprite_breadTilesLen;
+
+            _data->palette = sprite_breadPal;
+            _data->palette_length = sprite_breadPalLen;
+            break;
+
+        case(SpriteTypes::Type::CHALK):
+            _data->size = SpriteSize_16x16;
+            _data->format = SpriteColorFormat_16Color;
+
+            _data->data = (u8*)sprite_chalkTiles;
+            _data->tiles_length = sprite_chalkTilesLen;
+
+            _data->palette = sprite_chalkPal;
+            _data->palette_length = sprite_chalkPalLen;
+            break;
+
+        case(SpriteTypes::Type::CINNAMON):
+            _data->size = SpriteSize_16x16;
+            _data->format = SpriteColorFormat_16Color;
+
+            _data->data = (u8*)sprite_cinnamonTiles;
+            _data->tiles_length = sprite_cinnamonTilesLen;
+
+            _data->palette = sprite_cinnamonPal;
+            _data->palette_length = sprite_cinnamonPalLen;
+            break;
+
+        case(SpriteTypes::Type::CLOTHING_TAG):
+            _data->size = SpriteSize_16x16;
+            _data->format = SpriteColorFormat_16Color;
+
+            _data->data = (u8*)sprite_clothing_tagTiles;
+            _data->tiles_length = sprite_clothing_tagTilesLen;
+
+            _data->palette = sprite_clothing_tagPal;
+            _data->palette_length = sprite_clothing_tagPalLen;
+            break;
+
+        case(SpriteTypes::Type::COFFEE):
+            _data->size = SpriteSize_16x16;
+            _data->format = SpriteColorFormat_16Color;
+
+            _data->data = (u8*)sprite_coffeeTiles;
+            _data->tiles_length = sprite_coffeeTilesLen;
+
+            _data->palette = sprite_coffeePal;
+            _data->palette_length = sprite_coffeePalLen;
+            break;
+
+        case(SpriteTypes::Type::LUCKY_BAG):
+            _data->size = SpriteSize_16x16;
+            _data->format = SpriteColorFormat_16Color;
+
+            _data->data = (u8*)sprite_lucky_bagTiles;
+            _data->tiles_length = sprite_lucky_bagTilesLen;
+
+            _data->palette = sprite_lucky_bagPal;
+            _data->palette_length = sprite_lucky_bagPalLen;
+            break;
+
+        case(SpriteTypes::Type::NEW_WORLD):
+            _data->size = SpriteSize_16x16;
+            _data->format = SpriteColorFormat_16Color;
+
+            _data->data = (u8*)sprite_new_worldTiles;
+            _data->tiles_length = sprite_new_worldTilesLen;
+
+            _data->palette = sprite_new_worldPal;
+            _data->palette_length = sprite_new_worldPalLen;
+            break;
+
+        case(SpriteTypes::Type::PINEAPPLE):
+            _data->size = SpriteSize_16x16;
+            _data->format = SpriteColorFormat_16Color;
+
+            _data->data = (u8*)sprite_pineappleTiles;
+            _data->tiles_length = sprite_pineappleTilesLen;
+
+            _data->palette = sprite_pineapplePal;
+            _data->palette_length = sprite_pineapplePalLen;
+            break;
+
+        case(SpriteTypes::Type::MOCHI):
+            _data->size = SpriteSize_16x16;
+            _data->format = SpriteColorFormat_16Color;
+
+            _data->data = (u8*)sprite_mochiTiles;
+            _data->tiles_length = sprite_mochiTilesLen;
+
+            _data->palette = sprite_mochiPal;
+            _data->palette_length = sprite_mochiPalLen;
+            break;
+
+        case(SpriteTypes::Type::PEANUT_BUTTER_APPLE):
+            _data->size = SpriteSize_16x16;
+            _data->format = SpriteColorFormat_16Color;
+
+            _data->data = (u8*)sprite_peanut_butter_appleTiles;
+            _data->tiles_length = sprite_peanut_butter_appleTilesLen;
+
+            _data->palette = sprite_peanut_butter_applePal;
+            _data->palette_length = sprite_peanut_butter_applePalLen;
+            break;
+
+        case(SpriteTypes::Type::POLAROID):
+            _data->size = SpriteSize_16x16;
+            _data->format = SpriteColorFormat_16Color;
+
+            _data->data = (u8*)sprite_polaroidTiles;
+            _data->tiles_length = sprite_polaroidTilesLen;
+
+            _data->palette = sprite_polaroidPal;
+            _data->palette_length = sprite_polaroidPalLen;
+            break;
+
+        case(SpriteTypes::Type::WORN_TOY_CAT):
+            _data->size = SpriteSize_16x16;
+            _data->format = SpriteColorFormat_16Color;
+
+            _data->data = (u8*)sprite_worn_toy_catTiles;
+            _data->tiles_length = sprite_worn_toy_catTilesLen;
+
+            _data->palette = sprite_worn_toy_catPal;
+            _data->palette_length = sprite_worn_toy_catPalLen;
+            break;
     }
 }

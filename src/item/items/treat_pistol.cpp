@@ -4,12 +4,19 @@ void TreatPistolWeapon::spawn(Player* _player)
 {
     player = _player;
     _spawn(ItemTypes::Type::TREAT_PISTOL);
+    
     sprite.oam.static_slot = true;
     sprite.oam.oam_id = 0;
     sprite.oam.make_affine(0);
 
     use_sound = new Sound(SFX_GUN_SHOOT);
     use_delay = 20;
+}
+
+void TreatPistolWeapon::_spawn(ItemTypes::Type _type)
+{
+    type = _type;
+    sprite = Sprite(SpriteTypes::Type::TREAT_PISTOL, -1, 1);
 }
 
 void TreatPistolWeapon::shoot()

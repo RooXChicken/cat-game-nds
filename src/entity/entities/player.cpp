@@ -23,9 +23,9 @@ void Player::spawn(Scene* _scene, int _id)
     shoot_u = Sprite(SpriteTypes::Type::BELLA_SHOOT_U, 126, 0);
     shoot_u2 = Sprite(SpriteTypes::Type::BELLA_SHOOT_U2, 125, 0);
 
-    Sprite::load_palette(SpriteTypes::Type::TREAT_PISTOL, 1);
+    // Sprite::load_palette(SpriteTypes::Type::TREAT_PISTOL, 1);
 
-    shadow = Sprite(SpriteTypes::Type::SHADOW, -1, -2);
+    // shadow = Sprite(SpriteTypes::Type::SHADOW, -1, -2);
 
     shoot_d.oam.priority = 0;
     shoot_m.oam.priority = 0;

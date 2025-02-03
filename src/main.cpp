@@ -5,6 +5,8 @@
 
 #endif
 
+class Scene;
+
 #include <nds.h>
 #include <maxmod9.h>
 #include <stdio.h>
@@ -24,7 +26,7 @@ void init_audio();
 void scroll_camera();
 void display();
 
-static Scene* active_scene;
+Scene* active_scene;
 
 int room_bg = 0;
 const int TILE_WIDTH = 8; // width of a tile in pixels

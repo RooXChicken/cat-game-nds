@@ -29,8 +29,8 @@ struct SpriteTypes
         BELLA_SHOOT_U = 13,
         BELLA_SHOOT_U2 = 14,
         QTIP_RIFLE = 15,
-        QTIP = 16,
-        SHADOW = 17
+        QTIP = 16
+        // SHADOW = 17
     };
 };
 
@@ -80,8 +80,8 @@ struct SpriteData
     const unsigned short* palette;
     u32 palette_length;
 
-    int frame_count;
-    int frame_size;
+    int frame_count = 1;
+    int frame_size = 0;
 };
 
 class Sprite
@@ -107,8 +107,8 @@ class Sprite
         void draw_affine(Vector2 _camera, double _rotation, Vector2 _scale);
         void destroy(bool _global);
 
-        static SpriteData _get_sprite_data(SpriteTypes::Type _type);
-        static void load_palette(SpriteTypes::Type _type, int _index);
+        void _get_sprite_data(SpriteTypes::Type _type, SpriteData* _data);
+        // static void load_palette(SpriteTypes::Type _type, int _index);
         static void _display();
 };
 

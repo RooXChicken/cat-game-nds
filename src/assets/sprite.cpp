@@ -16,7 +16,7 @@
 #include <../build/sprite_cat_treat.h>
 #include <../build/sprite_qtip.h>
 #include <../build/sprite_qtip_rifle.h>
-#include <../build/sprite_shadow.h>
+// #include <../build/sprite_shadow.h>
 
 static u16* LOADED_TEX[256];
 
@@ -103,7 +103,8 @@ Sprite::Sprite(SpriteTypes::Type _type, int _oam_id, int _palette)
         oam.oam_id = _oam_id;
     }
 
-    SpriteData _data = _get_sprite_data(_type);
+    SpriteData _data = {};
+    _get_sprite_data(_type, &_data);
 
     data = _data.data;
     oam.size = _data.size;
@@ -134,14 +135,16 @@ Sprite::Sprite(SpriteTypes::Type _type, int _oam_id, int _palette)
         oam.palette = PALETTE_SLOTS[_palette];
 }
 
-void Sprite::load_palette(SpriteTypes::Type _type, int _index)
-{
-    SpriteData _data = _get_sprite_data(_type);
-    OAMPalette* _palette = new OAMPalette{_index, _data.format};
+// void Sprite::load_palette(SpriteTypes::Type _type, int _index)
+// {
+//     SpriteData* _data = _get_sprite_data(_type);
+//     OAMPalette* _palette = new OAMPalette{_index, _data->format};
 
-    dmaCopy(_data.palette, &SPRITE_PALETTE[_palette->id*16], _data.palette_length);
-    PALETTE_SLOTS[_palette->id] = _palette;
-}
+//     dmaCopy(_data->palette, &SPRITE_PALETTE[_palette->id*16], _data->palette_length);
+//     PALETTE_SLOTS[_palette->id] = _palette;
+
+//     free(_data);
+// }
 
 void Sprite::allocate_memory()
 {
@@ -200,18 +203,18 @@ void Sprite::_display()
         {
             OAMObject* _oam = OAM_SLOTS[i];
 
-            bool _mosaic = _oam->mosaic.cheap_length();
+            // bool _mosaic = _oam->mosaic.cheap_length();
 
             oamSet(&oamMain, _oam->oam_id, 
             (int)(_oam->position.x - _oam->camera_offset.x), (int)(_oam->position.y - _oam->camera_offset.y), 
             _oam->priority, _oam->palette->id, _oam->size, _oam->palette->format, 
-            _oam->pointer, _oam->affine_id, false, _oam->hide, _oam->flip_h, _oam->flip_v, _mosaic);
+            _oam->pointer, _oam->affine_id, false, _oam->hide, _oam->flip_h, _oam->flip_v, false);
 
-            if(_mosaic)
-            {
-                oamSetMosaicEnabled(&oamMain, _oam->oam_id, true);
-                oamSetMosaic((int)min(15, _oam->mosaic.x), (int)min(15, _oam->mosaic.y));
-            }
+            // if(_mosaic)
+            // {
+            //     oamSetMosaicEnabled(&oamMain, _oam->oam_id, true);
+            //     oamSetMosaic((int)min(15, _oam->mosaic.x), (int)min(15, _oam->mosaic.y));
+            // }
         }
     }
 
@@ -231,243 +234,239 @@ void Sprite::_display()
     }
 }
 
-SpriteData Sprite::_get_sprite_data(SpriteTypes::Type _type)
+void Sprite::_get_sprite_data(SpriteTypes::Type _type, SpriteData* _data)
 {
-    SpriteData _data = {};
-
     // depending on the sprite type, load in the relevant data
     // (hard-coded for now. maybe will be dynamic if i can figure it out)
     switch(_type)
     {
         case(SpriteTypes::Type::KITA):
-            _data.size = SpriteSize_64x64;
-            _data.format = SpriteColorFormat_256Color;
+            _data->size = SpriteSize_64x64;
+            _data->format = SpriteColorFormat_256Color;
             
-            _data.data = (u8*)sprite_kitaTiles;
-            _data.tiles_length = sprite_kitaTilesLen;
+            _data->data = (u8*)sprite_kitaTiles;
+            _data->tiles_length = sprite_kitaTilesLen;
 
-            _data.palette = sprite_kitaPal;
-            _data.palette_length = sprite_kitaPalLen;
+            _data->palette = sprite_kitaPal;
+            _data->palette_length = sprite_kitaPalLen;
             break;
 
         case(SpriteTypes::Type::BELLA_WALK):
-            _data.size = SpriteSize_32x32;
-            _data.format = SpriteColorFormat_16Color;
+            _data->size = SpriteSize_32x32;
+            _data->format = SpriteColorFormat_16Color;
 
-            _data.data = (u8*)sprite_bella_walkTiles;
-            _data.tiles_length = sprite_bella_walkTilesLen;
+            _data->data = (u8*)sprite_bella_walkTiles;
+            _data->tiles_length = sprite_bella_walkTilesLen;
 
-            _data.palette = sprite_bella_walkPal;
-            _data.palette_length = sprite_bella_walkPalLen;
+            _data->palette = sprite_bella_walkPal;
+            _data->palette_length = sprite_bella_walkPalLen;
 
-            _data.frame_count = 6;
-            _data.frame_size = 32*16;
+            _data->frame_count = 6;
+            _data->frame_size = 32*16;
             break;
 
         case(SpriteTypes::Type::BELLA_WALK_ARMS):
-            _data.size = SpriteSize_32x32;
-            _data.format = SpriteColorFormat_16Color;
+            _data->size = SpriteSize_32x32;
+            _data->format = SpriteColorFormat_16Color;
 
-            _data.data = (u8*)sprite_bella_walk_armsTiles;
-            _data.tiles_length = sprite_bella_walk_armsTilesLen;
+            _data->data = (u8*)sprite_bella_walk_armsTiles;
+            _data->tiles_length = sprite_bella_walk_armsTilesLen;
 
-            _data.palette = sprite_bella_walk_armsPal;
-            _data.palette_length = sprite_bella_walk_armsPalLen;
+            _data->palette = sprite_bella_walk_armsPal;
+            _data->palette_length = sprite_bella_walk_armsPalLen;
 
-            _data.frame_count = 6;
-            _data.frame_size = 32*16;
+            _data->frame_count = 6;
+            _data->frame_size = 32*16;
             break;
 
         case(SpriteTypes::Type::BELLA_IDLE):
-            _data.size = SpriteSize_32x32;
-            _data.format = SpriteColorFormat_16Color;
+            _data->size = SpriteSize_32x32;
+            _data->format = SpriteColorFormat_16Color;
 
-            _data.data = (u8*)sprite_bella_idleTiles;
-            _data.tiles_length = sprite_bella_idleTilesLen;
+            _data->data = (u8*)sprite_bella_idleTiles;
+            _data->tiles_length = sprite_bella_idleTilesLen;
 
-            _data.palette = sprite_bella_idlePal;
-            _data.palette_length = sprite_bella_idlePalLen;
+            _data->palette = sprite_bella_idlePal;
+            _data->palette_length = sprite_bella_idlePalLen;
 
-            _data.frame_count = 6;
-            _data.frame_size = 32*16;
+            _data->frame_count = 6;
+            _data->frame_size = 32*16;
             break;
 
         case(SpriteTypes::Type::BELLA_IDLE_ARMS):
-            _data.size = SpriteSize_32x32;
-            _data.format = SpriteColorFormat_16Color;
+            _data->size = SpriteSize_32x32;
+            _data->format = SpriteColorFormat_16Color;
 
-            _data.data = (u8*)sprite_bella_idle_armsTiles;
-            _data.tiles_length = sprite_bella_idle_armsTilesLen;
+            _data->data = (u8*)sprite_bella_idle_armsTiles;
+            _data->tiles_length = sprite_bella_idle_armsTilesLen;
 
-            _data.palette = sprite_bella_idle_armsPal;
-            _data.palette_length = sprite_bella_idle_armsPalLen;
+            _data->palette = sprite_bella_idle_armsPal;
+            _data->palette_length = sprite_bella_idle_armsPalLen;
 
-            _data.frame_count = 6;
-            _data.frame_size = 32*16;
+            _data->frame_count = 6;
+            _data->frame_size = 32*16;
             break;
 
         case(SpriteTypes::Type::CROSSHAIR):
-            _data.size = SpriteSize_8x8;
-            _data.format = SpriteColorFormat_16Color;
+            _data->size = SpriteSize_8x8;
+            _data->format = SpriteColorFormat_16Color;
 
-            _data.data = (u8*)sprite_crosshairTiles;
-            _data.tiles_length = sprite_crosshairTilesLen;
+            _data->data = (u8*)sprite_crosshairTiles;
+            _data->tiles_length = sprite_crosshairTilesLen;
 
-            _data.palette = sprite_crosshairPal;
-            _data.palette_length = sprite_crosshairPalLen;
+            _data->palette = sprite_crosshairPal;
+            _data->palette_length = sprite_crosshairPalLen;
             break;
 
         case(SpriteTypes::Type::TREAT_PISTOL):
-            _data.size = SpriteSize_32x32;
-            _data.format = SpriteColorFormat_16Color;
+            _data->size = SpriteSize_32x32;
+            _data->format = SpriteColorFormat_16Color;
 
-            _data.data = (u8*)sprite_treat_pistolTiles;
-            _data.tiles_length = sprite_treat_pistolTilesLen;
+            _data->data = (u8*)sprite_treat_pistolTiles;
+            _data->tiles_length = sprite_treat_pistolTilesLen;
 
-            _data.palette = sprite_treat_pistolPal;
-            _data.palette_length = sprite_treat_pistolPalLen;
+            _data->palette = sprite_treat_pistolPal;
+            _data->palette_length = sprite_treat_pistolPalLen;
             break;
 
         case(SpriteTypes::Type::CATNIP_CANON):
-            _data.size = SpriteSize_32x32;
-            _data.format = SpriteColorFormat_16Color;
+            _data->size = SpriteSize_32x32;
+            _data->format = SpriteColorFormat_16Color;
 
-            _data.data = (u8*)sprite_catnip_launcherTiles;
-            _data.tiles_length = sprite_catnip_launcherTilesLen;
+            _data->data = (u8*)sprite_catnip_launcherTiles;
+            _data->tiles_length = sprite_catnip_launcherTilesLen;
 
-            _data.palette = sprite_catnip_launcherPal;
-            _data.palette_length = sprite_catnip_launcherPalLen;
+            _data->palette = sprite_catnip_launcherPal;
+            _data->palette_length = sprite_catnip_launcherPalLen;
             break;
 
         case(SpriteTypes::Type::CAT_TREAT):
-            _data.size = SpriteSize_8x8;
-            _data.format = SpriteColorFormat_16Color;
+            _data->size = SpriteSize_8x8;
+            _data->format = SpriteColorFormat_16Color;
 
-            _data.data = (u8*)sprite_cat_treatTiles;
-            _data.tiles_length = sprite_cat_treatTilesLen;
+            _data->data = (u8*)sprite_cat_treatTiles;
+            _data->tiles_length = sprite_cat_treatTilesLen;
 
-            _data.palette = sprite_cat_treatPal;
-            _data.palette_length = sprite_cat_treatPalLen;
+            _data->palette = sprite_cat_treatPal;
+            _data->palette_length = sprite_cat_treatPalLen;
             break;
 
         case(SpriteTypes::Type::BELLA_SHOOT_D):
-            _data.size = SpriteSize_32x32;
-            _data.format = SpriteColorFormat_16Color;
+            _data->size = SpriteSize_32x32;
+            _data->format = SpriteColorFormat_16Color;
 
-            _data.data = (u8*)sprite_bella_shoot_dTiles;
-            _data.tiles_length = sprite_bella_shoot_dTilesLen;
+            _data->data = (u8*)sprite_bella_shoot_dTiles;
+            _data->tiles_length = sprite_bella_shoot_dTilesLen;
 
-            _data.palette = sprite_bella_shoot_dPal;
-            _data.palette_length = sprite_bella_shoot_dPalLen;
+            _data->palette = sprite_bella_shoot_dPal;
+            _data->palette_length = sprite_bella_shoot_dPalLen;
 
-            _data.frame_count = 6;
-            _data.frame_size = 32*16;
+            _data->frame_count = 6;
+            _data->frame_size = 32*16;
             break;
 
         case(SpriteTypes::Type::BELLA_SHOOT_D2):
-            _data.size = SpriteSize_32x32;
-            _data.format = SpriteColorFormat_16Color;
+            _data->size = SpriteSize_32x32;
+            _data->format = SpriteColorFormat_16Color;
 
-            _data.data = (u8*)sprite_bella_shoot_d2Tiles;
-            _data.tiles_length = sprite_bella_shoot_d2TilesLen;
+            _data->data = (u8*)sprite_bella_shoot_d2Tiles;
+            _data->tiles_length = sprite_bella_shoot_d2TilesLen;
 
-            _data.palette = sprite_bella_shoot_d2Pal;
-            _data.palette_length = sprite_bella_shoot_d2PalLen;
+            _data->palette = sprite_bella_shoot_d2Pal;
+            _data->palette_length = sprite_bella_shoot_d2PalLen;
 
-            _data.frame_count = 6;
-            _data.frame_size = 32*16;
+            _data->frame_count = 6;
+            _data->frame_size = 32*16;
             break;
 
         case(SpriteTypes::Type::BELLA_SHOOT_M):
-            _data.size = SpriteSize_32x32;
-            _data.format = SpriteColorFormat_16Color;
+            _data->size = SpriteSize_32x32;
+            _data->format = SpriteColorFormat_16Color;
 
-            _data.data = (u8*)sprite_bella_shoot_mTiles;
-            _data.tiles_length = sprite_bella_shoot_mTilesLen;
+            _data->data = (u8*)sprite_bella_shoot_mTiles;
+            _data->tiles_length = sprite_bella_shoot_mTilesLen;
 
-            _data.palette = sprite_bella_shoot_mPal;
-            _data.palette_length = sprite_bella_shoot_mPalLen;
+            _data->palette = sprite_bella_shoot_mPal;
+            _data->palette_length = sprite_bella_shoot_mPalLen;
 
-            _data.frame_count = 6;
-            _data.frame_size = 32*16;
+            _data->frame_count = 6;
+            _data->frame_size = 32*16;
             break;
 
         case(SpriteTypes::Type::BELLA_SHOOT_M2):
-            _data.size = SpriteSize_32x32;
-            _data.format = SpriteColorFormat_16Color;
+            _data->size = SpriteSize_32x32;
+            _data->format = SpriteColorFormat_16Color;
 
-            _data.data = (u8*)sprite_bella_shoot_m2Tiles;
-            _data.tiles_length = sprite_bella_shoot_m2TilesLen;
+            _data->data = (u8*)sprite_bella_shoot_m2Tiles;
+            _data->tiles_length = sprite_bella_shoot_m2TilesLen;
 
-            _data.palette = sprite_bella_shoot_m2Pal;
-            _data.palette_length = sprite_bella_shoot_m2PalLen;
+            _data->palette = sprite_bella_shoot_m2Pal;
+            _data->palette_length = sprite_bella_shoot_m2PalLen;
 
-            _data.frame_count = 6;
-            _data.frame_size = 32*16;
+            _data->frame_count = 6;
+            _data->frame_size = 32*16;
             break;
 
         case(SpriteTypes::Type::BELLA_SHOOT_U):
-            _data.size = SpriteSize_32x32;
-            _data.format = SpriteColorFormat_16Color;
+            _data->size = SpriteSize_32x32;
+            _data->format = SpriteColorFormat_16Color;
 
-            _data.data = (u8*)sprite_bella_shoot_uTiles;
-            _data.tiles_length = sprite_bella_shoot_uTilesLen;
+            _data->data = (u8*)sprite_bella_shoot_uTiles;
+            _data->tiles_length = sprite_bella_shoot_uTilesLen;
 
-            _data.palette = sprite_bella_shoot_uPal;
-            _data.palette_length = sprite_bella_shoot_uPalLen;
+            _data->palette = sprite_bella_shoot_uPal;
+            _data->palette_length = sprite_bella_shoot_uPalLen;
 
-            _data.frame_count = 6;
-            _data.frame_size = 32*16;
+            _data->frame_count = 6;
+            _data->frame_size = 32*16;
             break;
 
         case(SpriteTypes::Type::BELLA_SHOOT_U2):
-            _data.size = SpriteSize_32x32;
-            _data.format = SpriteColorFormat_16Color;
+            _data->size = SpriteSize_32x32;
+            _data->format = SpriteColorFormat_16Color;
 
-            _data.data = (u8*)sprite_bella_shoot_u2Tiles;
-            _data.tiles_length = sprite_bella_shoot_u2TilesLen;
+            _data->data = (u8*)sprite_bella_shoot_u2Tiles;
+            _data->tiles_length = sprite_bella_shoot_u2TilesLen;
 
-            _data.palette = sprite_bella_shoot_u2Pal;
-            _data.palette_length = sprite_bella_shoot_u2PalLen;
+            _data->palette = sprite_bella_shoot_u2Pal;
+            _data->palette_length = sprite_bella_shoot_u2PalLen;
 
-            _data.frame_count = 6;
-            _data.frame_size = 32*16;
+            _data->frame_count = 6;
+            _data->frame_size = 32*16;
             break;
 
         case(SpriteTypes::Type::QTIP):
-            _data.size = SpriteSize_8x8;
-            _data.format = SpriteColorFormat_16Color;
+            _data->size = SpriteSize_8x8;
+            _data->format = SpriteColorFormat_16Color;
 
-            _data.data = (u8*)sprite_qtipTiles;
-            _data.tiles_length = sprite_qtipTilesLen;
+            _data->data = (u8*)sprite_qtipTiles;
+            _data->tiles_length = sprite_qtipTilesLen;
 
-            _data.palette = sprite_qtipPal;
-            _data.palette_length = sprite_qtipPalLen;
+            _data->palette = sprite_qtipPal;
+            _data->palette_length = sprite_qtipPalLen;
             break;
 
         case(SpriteTypes::Type::QTIP_RIFLE):
-            _data.size = SpriteSize_32x32;
-            _data.format = SpriteColorFormat_16Color;
+            _data->size = SpriteSize_32x32;
+            _data->format = SpriteColorFormat_16Color;
 
-            _data.data = (u8*)sprite_qtip_rifleTiles;
-            _data.tiles_length = sprite_qtip_rifleTilesLen;
+            _data->data = (u8*)sprite_qtip_rifleTiles;
+            _data->tiles_length = sprite_qtip_rifleTilesLen;
 
-            _data.palette = sprite_qtip_riflePal;
-            _data.palette_length = sprite_qtip_riflePalLen;
+            _data->palette = sprite_qtip_riflePal;
+            _data->palette_length = sprite_qtip_riflePalLen;
             break;
 
-        case(SpriteTypes::Type::SHADOW):
-            _data.size = SpriteSize_32x8;
-            _data.format = SpriteColorFormat_Bmp;
-            // oam.palette = new OAMPalette{0, SpriteColorFormat_Bmp, 0};
+        // case(SpriteTypes::Type::SHADOW):
+        //     _data->size = SpriteSize_32x8;
+        //     _data->format = SpriteColorFormat_Bmp;
+        //     // oam.palette = new OAMPalette{0, SpriteColorFormat_Bmp, 0};
 
-            _data.data = (u8*)sprite_shadowBitmap;
-            _data.tiles_length = sprite_shadowBitmapLen;
+        //     _data->data = (u8*)sprite_shadowBitmap;
+        //     _data->tiles_length = sprite_shadowBitmapLen;
 
-            // _data.palette = sprite_shadowPal;
-            // _data.palette_length = sprite_shadowPalLen;
-            break;
+        //     // _data->palette = sprite_shadowPal;
+        //     // _data->palette_length = sprite_shadowPalLen;
+        //     break;
     }
-
-    return _data;
 }

@@ -26,7 +26,7 @@ void init_audio();
 void scroll_camera();
 void display();
 
-Scene* active_scene;
+static Scene* active_scene;
 
 int room_bg = 0;
 const int TILE_WIDTH = 8; // width of a tile in pixels

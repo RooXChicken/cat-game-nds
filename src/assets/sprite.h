@@ -89,7 +89,7 @@ class Sprite
     private:
         SpriteTypes::Type type;
 
-        void allocate_memory();
+        void allocate_memory(SpriteColorFormat _format);
         void _animate();
         int previous_frame = 0;
     public:
@@ -107,8 +107,8 @@ class Sprite
         void draw_affine(Vector2 _camera, double _rotation, Vector2 _scale);
         void destroy(bool _global);
 
-        void _get_sprite_data(SpriteTypes::Type _type, SpriteData* _data);
-        // static void load_palette(SpriteTypes::Type _type, int _index);
+        static void _get_sprite_data(SpriteTypes::Type _type, SpriteData* _data);
+        static void load_palette(SpriteTypes::Type _type, int _index);
         static void _display();
 };
 

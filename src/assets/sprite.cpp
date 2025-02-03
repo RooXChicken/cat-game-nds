@@ -113,7 +113,7 @@ Sprite::Sprite(SpriteTypes::Type _type, int _oam_id, int _palette)
     frame_size = _data.frame_size;
 
     // allocate memory and copy the tiles into the tile buffer
-    allocate_memory();
+    allocate_memory(_data.format);
     dmaCopy(data, oam.pointer, _data.tiles_length);
 
     // if the palette is -1, it will allocate the sprite's palette into memory
@@ -124,7 +124,7 @@ Sprite::Sprite(SpriteTypes::Type _type, int _oam_id, int _palette)
         for(int i = 0; i < 16; i++)
             if(PALETTE_SLOTS[i] == nullptr)
             {
-                oam.palette = new OAMPalette{i, _data.format};
+                oam.palette = new OAMPalette{i, SpriteColorFormat_16Color};
                 break;
             }
 
@@ -135,21 +135,20 @@ Sprite::Sprite(SpriteTypes::Type _type, int _oam_id, int _palette)
         oam.palette = PALETTE_SLOTS[_palette];
 }
 
-// void Sprite::load_palette(SpriteTypes::Type _type, int _index)
-// {
-//     SpriteData* _data = _get_sprite_data(_type);
-//     OAMPalette* _palette = new OAMPalette{_index, _data->format};
+void Sprite::load_palette(SpriteTypes::Type _type, int _index)
+{
+    SpriteData _data = {};
+    _get_sprite_data(_type, &_data);
+    OAMPalette* _palette = new OAMPalette{_index, _data.format};
 
-//     dmaCopy(_data->palette, &SPRITE_PALETTE[_palette->id*16], _data->palette_length);
-//     PALETTE_SLOTS[_palette->id] = _palette;
+    dmaCopy(_data.palette, &SPRITE_PALETTE[_palette->id*16], _data.palette_length);
+    PALETTE_SLOTS[_palette->id] = _palette;
+}
 
-//     free(_data);
-// }
-
-void Sprite::allocate_memory()
+void Sprite::allocate_memory(SpriteColorFormat _format)
 {
     if(LOADED_TEX[type] == nullptr)
-        LOADED_TEX[type] = oamAllocateGfx(&oamMain, oam.size, oam.palette->format);
+        LOADED_TEX[type] = oamAllocateGfx(&oamMain, oam.size, _format);
 
     oam.pointer = LOADED_TEX[type];
 }
@@ -203,18 +202,18 @@ void Sprite::_display()
         {
             OAMObject* _oam = OAM_SLOTS[i];
 
-            // bool _mosaic = _oam->mosaic.cheap_length();
+            bool _mosaic = _oam->mosaic.cheap_length();
 
             oamSet(&oamMain, _oam->oam_id, 
             (int)(_oam->position.x - _oam->camera_offset.x), (int)(_oam->position.y - _oam->camera_offset.y), 
             _oam->priority, _oam->palette->id, _oam->size, _oam->palette->format, 
             _oam->pointer, _oam->affine_id, false, _oam->hide, _oam->flip_h, _oam->flip_v, false);
 
-            // if(_mosaic)
-            // {
-            //     oamSetMosaicEnabled(&oamMain, _oam->oam_id, true);
-            //     oamSetMosaic((int)min(15, _oam->mosaic.x), (int)min(15, _oam->mosaic.y));
-            // }
+            if(_mosaic)
+            {
+                oamSetMosaicEnabled(&oamMain, _oam->oam_id, true);
+                oamSetMosaic((int)min(15, _oam->mosaic.x), (int)min(15, _oam->mosaic.y));
+            }
         }
     }
 
